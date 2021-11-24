@@ -298,7 +298,7 @@ namespace PictureInPicture.ViewModels
 
       Logger.Instance.Info("Init cropper : " + windowInfo.Title);
 
-      Title = windowInfo.Title + " - Cropper - PiP-Tool";
+      Title = windowInfo.Title + " - Cropper - PictureInPicture";
 
       _windowInfo.SetAsForegroundWindow();
       _sizeRestriction = _windowInfo.Rect - _windowInfo.Border;

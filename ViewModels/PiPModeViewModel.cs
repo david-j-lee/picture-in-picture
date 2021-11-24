@@ -219,7 +219,7 @@ namespace PictureInPicture.ViewModels
 
       MessengerInstance.Unregister<SelectedWindow>(this);
 
-      Title = selectedWindow.WindowInfo.Title + " - PiP Mode - PiP-Tool";
+      Title = selectedWindow.WindowInfo.Title + " - PiP Mode - PictureInPicture";
 
       _selectedWindow = selectedWindow;
       _renderSizeEventDisabled = true;
@@ -232,8 +232,6 @@ namespace PictureInPicture.ViewModels
       Width = (int)(_selectedWindow.SelectedRegion.Width / _dpiX);
       Top = 200;
       Left = 200;
-
-      Train();
 
       // set Min size
       if (Height < Width)
@@ -278,7 +276,7 @@ namespace PictureInPicture.ViewModels
       {
         fVisible = true,
         dwFlags = (int)(DWM_TNP.DWM_TNP_VISIBLE | DWM_TNP.DWM_TNP_RECTDESTINATION | DWM_TNP.DWM_TNP_OPACITY | DWM_TNP.DWM_TNP_RECTSOURCE),
-        opacity = 255,
+        opacity = 255, // TODO: change this prop when navigated to
         rcDestination = dest,
         rcSource = _selectedWindow.SelectedRegion
       };
@@ -348,38 +346,6 @@ namespace PictureInPicture.ViewModels
     {
       var windowsList = Application.Current.Windows.Cast<Window>();
       return windowsList.FirstOrDefault(window => window.DataContext == this);
-    }
-
-    /// <summary>
-    /// Add Selected region to data (machine learning) and update the model
-    /// </summary>
-    private void Train()
-    {
-      var windowNoBorder = _selectedWindow.WindowInfo.RectNoBorder;
-      var regionNoBorder = _selectedWindow.SelectedRegionNoBorder;
-
-      var region =
-              $"{regionNoBorder.Top} " +
-              $"{regionNoBorder.Left} " +
-              $"{regionNoBorder.Height} " +
-              $"{regionNoBorder.Width}";
-
-      _mlSource = new CancellationTokenSource();
-      _mlToken = _mlSource.Token;
-      // TODO: commented out code
-      // Task.Run(() =>
-      // {
-      //   MachineLearningService.Instance.AddData(
-      //             region,
-      //             _selectedWindow.WindowInfo.Program,
-      //             _selectedWindow.WindowInfo.Title,
-      //             windowNoBorder.Y,
-      //             windowNoBorder.X,
-      //             windowNoBorder.Height,
-      //             windowNoBorder.Width);
-
-      //   MachineLearningService.Instance.TrainAsync().ContinueWith(obj => { Console.WriteLine("Trained"); }, _mlToken);
-      // }, _mlToken);
     }
 
     /// <summary>

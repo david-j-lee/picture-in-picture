@@ -4,7 +4,9 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-  xmlns:viewModels="clr-namespace:PictureInPicture.ViewModels" mc:Ignorable="d" Topmost="True" AllowsTransparency="True" Top="0" ResizeMode="NoResize" BorderThickness="1, 0, 1, 1" Height="50" Width="450" WindowStyle="None" Title="PiP-Tool">
+  xmlns:viewModels="clr-namespace:PictureInPicture.ViewModels"
+  mc:Ignorable="d" Topmost="True" AllowsTransparency="True" ResizeMode="NoResize" BorderThickness="1, 0, 1, 1" Height="50" Width="450" WindowStyle="None" Title="PictureInPicture">
+
   <Window.DataContext>
     <viewModels:MainViewModel/>
   </Window.DataContext>
@@ -24,7 +26,7 @@
 
   <Grid>
 
-    <Label x:Name="drag" ToolTip="{StaticResource DragThisWindow}" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="30" Height="50" FontSize="16" Opacity="0.5" FontFamily="/PiP-Tool;component/Assets/#Flaticon" Content="&#xF100;" Foreground="White" />
+    <Label x:Name="drag" ToolTip="{StaticResource DragThisWindow}" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="30" Height="50" FontSize="16" Opacity="0.5" FontFamily="/PictureInPicture;component/Assets/#Flaticon" Content="&#xF100;" Foreground="White" />
 
     <ComboBox HorizontalAlignment="Left" ToolTip="{StaticResource SelectWindow}" VerticalAlignment="Top" Margin="30,0,0,-1" Width="320" Height="50" BorderThickness="0" FontSize="14" Opacity="0.5" ItemsSource="{Binding WindowsList, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Title" SelectedItem="{Binding SelectedWindowInfo}">
       <ComboBox.ItemContainerStyle>
@@ -34,9 +36,10 @@
       </ComboBox.ItemContainerStyle>
     </ComboBox>
 
-    <Button x:Name="ButtonPip" ToolTip="{StaticResource EnterPiPMode}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="350,0,0,0" Width="50" Height="50" FontSize="14" BorderBrush="#FF7C7C7C" Opacity="0.5" Command="{Binding StartPipCommand}" BorderThickness="0" FontFamily="/PiP-Tool;component/Assets/#Flaticon" Content="&#xF101;" Foreground="White" />
+    <Button x:Name="ButtonPip" ToolTip="{StaticResource EnterPiPMode}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="350,0,0,0" Width="50" Height="50" FontSize="14" BorderBrush="#FF7C7C7C" Opacity="0.5" Command="{Binding StartPipCommand}" BorderThickness="0" FontFamily="/PictureInPicture;component/Assets/#Flaticon" Content="&#xF101;" Foreground="White" />
 
-    <Button x:Name="ButtonQuit" ToolTip="{StaticResource Quit}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="400,0,0,0" Width="50" Height="50" FontSize="14" BorderBrush="#e81123" Opacity="0.5" Command="{Binding QuitCommand}" BorderThickness="0" FontFamily="/PiP-Tool;component/Assets/#Flaticon" Content="&#xF102;" Foreground="White" />
+    <Button x:Name="ButtonQuit" ToolTip="{StaticResource Quit}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="400,0,0,0" Width="50" Height="50" FontSize="14" BorderBrush="#e81123" Opacity="0.5" Command="{Binding QuitCommand}" BorderThickness="0" FontFamily="/PictureInPicture;component/Assets/#Flaticon" Content="&#xF102;" Foreground="White" />
 
   </Grid>
+
 </Window>

@@ -20,7 +20,9 @@ namespace PictureInPicture.Views
       Loaded += (s, e) =>
       {
         if (DataContext is ICloseable closeable)
+        {
           closeable.RequestClose += (_, __) => Close();
+        }
       };
     }
 
@@ -32,7 +34,7 @@ namespace PictureInPicture.Views
     {
       base.OnMouseLeftButtonDown(e);
 
-      // DragMove();
+      DragMove();
     }
 
   }
