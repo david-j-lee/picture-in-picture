@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -23,7 +22,6 @@ namespace PictureInPicture.ViewModels
 {
   public class PiPModeViewModel : ViewModelBase, ICloseable, IDisposable
   {
-
     #region public
 
     /// <summary>
@@ -171,13 +169,19 @@ namespace PictureInPicture.ViewModels
     private int _left;
     private int _height;
     private int _width;
-    private IntPtr _targetHandle, _thumbHandle;
+    private IntPtr _targetHandle,
+        _thumbHandle;
     private SelectedWindow _selectedWindow;
 
-    private enum Position { TopLeft, TopRight, BottomLeft, BottomRight }
+    private enum Position
+    {
+      TopLeft,
+      TopRight,
+      BottomLeft,
+      BottomRight
+    }
 
-    private CancellationTokenSource _mlSource;
-    private CancellationToken _mlToken;
+    private readonly CancellationTokenSource _mlSource;
 
     #endregion
 
@@ -192,12 +196,21 @@ namespace PictureInPicture.ViewModels
       LoadedCommand = new RelayCommand(LoadedCommandExecute);
       CloseCommand = new RelayCommand(CloseCommandExecute);
       ClosingCommand = new RelayCommand(ClosingCommandExecute);
-      ChangeSelectedWindowCommand = new RelayCommand(ChangeSelectedWindowCommandExecute);
-      MouseEnterCommand = new RelayCommand<MouseEventArgs>(MouseEnterCommandExecute);
-      MouseLeaveCommand = new RelayCommand<MouseEventArgs>(MouseLeaveCommandExecute);
+      ChangeSelectedWindowCommand = new RelayCommand(
+          ChangeSelectedWindowCommandExecute
+      );
+      MouseEnterCommand = new RelayCommand<MouseEventArgs>(
+          MouseEnterCommandExecute
+      );
+      MouseLeaveCommand = new RelayCommand<MouseEventArgs>(
+          MouseLeaveCommandExecute
+      );
       DpiChangedCommand = new RelayCommand(DpiChangedCommandExecute);
 
-      MessengerInstance.Register<SelectedWindow>(this, InitSelectedWindow);
+      MessengerInstance.Register<SelectedWindow>(
+          this,
+          InitSelectedWindow
+      );
 
       MinHeight = MinSize;
       MinWidth = MinSize;
@@ -215,11 +228,15 @@ namespace PictureInPicture.ViewModels
         return;
       }
 
-      Logger.Instance.Info("Init PiP mode : " + selectedWindow.WindowInfo.Title);
+      Logger.Instance.Info(
+          "Init PiP mode : " + selectedWindow.WindowInfo.Title
+      );
 
       MessengerInstance.Unregister<SelectedWindow>(this);
 
-      Title = selectedWindow.WindowInfo.Title + " - PiP Mode - PictureInPicture";
+      Title =
+          selectedWindow.WindowInfo.Title
+          + " - PiP Mode - PictureInPicture";
 
       _selectedWindow = selectedWindow;
       _renderSizeEventDisabled = true;
@@ -235,9 +252,13 @@ namespace PictureInPicture.ViewModels
 
       // set Min size
       if (Height < Width)
+      {
         MinWidth = MinSize * (int)Ratio;
+      }
       else if (Width < Height)
+      {
         MinHeight = MinSize * (int)_selectedWindow.RatioHeightByWidth;
+      }
 
       _renderSizeEventDisabled = false;
 
@@ -252,14 +273,30 @@ namespace PictureInPicture.ViewModels
     /// </summary>
     private void InitDwmThumbnail()
     {
-      if (_selectedWindow == null || _selectedWindow.WindowInfo.Handle == IntPtr.Zero || _targetHandle == IntPtr.Zero)
+      if (
+          _selectedWindow == null
+          || _selectedWindow.WindowInfo.Handle == IntPtr.Zero
+          || _targetHandle == IntPtr.Zero
+      )
+      {
         return;
+      }
 
       if (_thumbHandle != IntPtr.Zero)
-        NativeMethods.DwmUnregisterThumbnail(_thumbHandle);
+      {
+        _ = NativeMethods.DwmUnregisterThumbnail(_thumbHandle);
+      }
 
-      if (NativeMethods.DwmRegisterThumbnail(_targetHandle, _selectedWindow.WindowInfo.Handle, out _thumbHandle) == 0)
+      if (
+          NativeMethods.DwmRegisterThumbnail(
+              _targetHandle,
+              _selectedWindow.WindowInfo.Handle,
+              out _thumbHandle
+          ) == 0
+      )
+      {
         UpdateDwmThumbnail();
+      }
     }
 
     /// <summary>
@@ -270,18 +307,31 @@ namespace PictureInPicture.ViewModels
       if (_thumbHandle == IntPtr.Zero)
         return;
 
-      var dest = new NativeStructs.Rect(0, _heightOffset, (int)(_width * _dpiX), (int)(_height * _dpiY));
+      var dest = new NativeStructs.Rect(
+          0,
+          _heightOffset,
+          (int)(_width * _dpiX),
+          (int)(_height * _dpiY)
+      );
 
       var props = new NativeStructs.DwmThumbnailProperties
       {
         fVisible = true,
-        dwFlags = (int)(DWM_TNP.DWM_TNP_VISIBLE | DWM_TNP.DWM_TNP_RECTDESTINATION | DWM_TNP.DWM_TNP_OPACITY | DWM_TNP.DWM_TNP_RECTSOURCE),
+        dwFlags = (int)(
+              DWM_TNP.DWM_TNP_VISIBLE
+              | DWM_TNP.DWM_TNP_RECTDESTINATION
+              | DWM_TNP.DWM_TNP_OPACITY
+              | DWM_TNP.DWM_TNP_RECTSOURCE
+          ),
         opacity = 255, // TODO: change this prop when navigated to
         rcDestination = dest,
         rcSource = _selectedWindow.SelectedRegion
       };
 
-      NativeMethods.DwmUpdateThumbnailProperties(_thumbHandle, ref props);
+      _ = NativeMethods.DwmUpdateThumbnailProperties(
+          _thumbHandle,
+          ref props
+      );
     }
 
     /// <summary>
@@ -293,13 +343,19 @@ namespace PictureInPicture.ViewModels
 
       if (Height > SystemParameters.PrimaryScreenHeight * sizePercentage)
       {
-        Height = (int)(SystemParameters.PrimaryScreenHeight * sizePercentage);
+        Height = (int)(
+            SystemParameters.PrimaryScreenHeight * sizePercentage
+        );
         Width = Convert.ToInt32(Height * Ratio);
       }
       if (Width > SystemParameters.PrimaryScreenWidth * sizePercentage)
       {
-        Width = (int)(SystemParameters.PrimaryScreenWidth * sizePercentage);
-        Height = Convert.ToInt32(Width * _selectedWindow.RatioHeightByWidth);
+        Width = (int)(
+            SystemParameters.PrimaryScreenWidth * sizePercentage
+        );
+        Height = Convert.ToInt32(
+            Width * _selectedWindow.RatioHeightByWidth
+        );
       }
       _renderSizeEventDisabled = false;
     }
@@ -310,8 +366,12 @@ namespace PictureInPicture.ViewModels
     private void SetPosition(Position position)
     {
       _renderSizeEventDisabled = true;
-      var resolutionWidth = (int)(SystemParameters.PrimaryScreenWidth / _dpiX);
-      var resolutionHeight = (int)(SystemParameters.PrimaryScreenHeight / _dpiY);
+      var resolutionWidth = (int)(
+          SystemParameters.PrimaryScreenWidth / _dpiX
+      );
+      var resolutionHeight = (int)(
+          SystemParameters.PrimaryScreenHeight / _dpiY
+      );
       var top = 0;
       var left = 0;
       switch (position)
@@ -322,15 +382,27 @@ namespace PictureInPicture.ViewModels
           break;
         case Position.TopRight:
           top = (int)(resolutionHeight * DefaultPositionPercentage);
-          left = resolutionWidth - Width - (int)(resolutionWidth * DefaultPositionPercentage);
+          left =
+              resolutionWidth
+              - Width
+              - (int)(resolutionWidth * DefaultPositionPercentage);
           break;
         case Position.BottomLeft:
-          top = resolutionHeight - Height - (int)(resolutionHeight * DefaultPositionPercentage);
+          top =
+              resolutionHeight
+              - Height
+              - (int)(resolutionHeight * DefaultPositionPercentage);
           left = (int)(resolutionWidth * DefaultPositionPercentage);
           break;
         case Position.BottomRight:
-          top = resolutionHeight - Height - (int)(resolutionHeight * DefaultPositionPercentage);
-          left = resolutionWidth - Width - (int)(resolutionWidth * DefaultPositionPercentage);
+          top =
+              resolutionHeight
+              - Height
+              - (int)(resolutionHeight * DefaultPositionPercentage);
+          left =
+              resolutionWidth
+              - Width
+              - (int)(resolutionWidth * DefaultPositionPercentage);
           break;
       }
       Top = top;
@@ -345,7 +417,9 @@ namespace PictureInPicture.ViewModels
     private Window ThisWindow()
     {
       var windowsList = Application.Current.Windows.Cast<Window>();
-      return windowsList.FirstOrDefault(window => window.DataContext == this);
+      return windowsList.FirstOrDefault(
+          window => window.DataContext == this
+      );
     }
 
     /// <summary>
@@ -358,21 +432,41 @@ namespace PictureInPicture.ViewModels
     /// <param name="lParam">The message's lParam value.</param>
     /// <param name="handeled">A value that indicates whether the message was handled. Set the value to true if the message was handled; otherwise, false.</param>
     /// <returns>The appropriate return value depends on the particular message. See the message documentation details for the Win32 message being handled.</returns>
-    private IntPtr DragHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handeled)
+    private IntPtr DragHook(
+        IntPtr hwnd,
+        int msg,
+        IntPtr wParam,
+        IntPtr lParam,
+        ref bool handeled
+    )
     {
       if ((WM)msg != WM.WINDOWPOSCHANGING)
+      {
         return IntPtr.Zero;
+      }
 
       if (_renderSizeEventDisabled)
+      {
         return IntPtr.Zero;
+      }
 
-      var position = (NativeStructs.WINDOWPOS)Marshal.PtrToStructure(lParam, typeof(NativeStructs.WINDOWPOS));
-      if ((position.flags & (int)SWP.NOMOVE) != 0 ||
-          HwndSource.FromHwnd(hwnd)?.RootVisual == null) return IntPtr.Zero;
+      var position = (NativeStructs.WINDOWPOS)Marshal.PtrToStructure(
+          lParam,
+          typeof(NativeStructs.WINDOWPOS)
+      );
+      if (
+          (position.flags & (int)SWP.NOMOVE) != 0
+          || HwndSource.FromHwnd(hwnd)?.RootVisual == null
+      )
+      {
+        return IntPtr.Zero;
+      }
 
       var topBarHeight = 0;
       if (TopBarIsVisible)
+      {
         topBarHeight = TopBarHeight;
+      }
 
       position.cx = (int)((position.cy - topBarHeight) * Ratio);
 
@@ -389,7 +483,9 @@ namespace PictureInPicture.ViewModels
     public void Dispose()
     {
       _mlSource?.Cancel();
-      ((HwndSource)PresentationSource.FromVisual(ThisWindow()))?.RemoveHook(DragHook);
+      (
+          (HwndSource)PresentationSource.FromVisual(ThisWindow())
+      )?.RemoveHook(DragHook);
     }
 
     #region commands
@@ -399,9 +495,13 @@ namespace PictureInPicture.ViewModels
     /// </summary>
     private void LoadedCommandExecute()
     {
-      ((HwndSource)PresentationSource.FromVisual(ThisWindow()))?.AddHook(DragHook);
+      ((HwndSource)PresentationSource.FromVisual(ThisWindow()))?.AddHook(
+          DragHook
+      );
       var windowsList = Application.Current.Windows.Cast<Window>();
-      var thisWindow = windowsList.FirstOrDefault(x => x.DataContext == this);
+      var thisWindow = windowsList.FirstOrDefault(
+          x => x.DataContext == this
+      );
       if (thisWindow != null)
         _targetHandle = new WindowInteropHelper(thisWindow).Handle;
       InitDwmThumbnail();
@@ -442,7 +542,9 @@ namespace PictureInPicture.ViewModels
     private void MouseEnterCommandExecute(MouseEventArgs e)
     {
       if (TopBarIsVisible)
+      {
         return;
+      }
       _renderSizeEventDisabled = true;
       TopBarVisibility = Visibility.Visible;
       _heightOffset = (int)(TopBarHeight * _dpiY);
@@ -462,7 +564,12 @@ namespace PictureInPicture.ViewModels
       // Prevent OnMouseEnter, OnMouseLeave loop
       Thread.Sleep(50);
       NativeMethods.GetCursorPos(out var p);
-      var r = new Rectangle(Convert.ToInt32(Left), Convert.ToInt32(Top), Convert.ToInt32(Width), Convert.ToInt32(Height));
+      var r = new Rectangle(
+          Convert.ToInt32(Left),
+          Convert.ToInt32(Top),
+          Convert.ToInt32(Width),
+          Convert.ToInt32(Height)
+      );
       var pa = new Point(Convert.ToInt32(p.X), Convert.ToInt32(p.Y));
 
       if (!TopBarIsVisible || r.Contains(pa))
@@ -484,7 +591,6 @@ namespace PictureInPicture.ViewModels
     {
       DpiHelper.GetDpi(_targetHandle, out _dpiX, out _dpiY);
     }
-
     #endregion
 
   }

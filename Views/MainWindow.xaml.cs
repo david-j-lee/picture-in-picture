@@ -9,7 +9,6 @@ namespace PictureInPicture.Views
   /// </summary>
   public partial class MainWindow
   {
-
     private bool _dragging;
     private Point _anchorPoint;
 
@@ -23,7 +22,9 @@ namespace PictureInPicture.Views
       Loaded += (s, e) =>
       {
         if (DataContext is ICloseable closeable)
+        {
           closeable.RequestClose += (_, __) => Close();
+        }
       };
     }
 
@@ -63,6 +64,5 @@ namespace PictureInPicture.Views
       _dragging = false;
       e.Handled = true;
     }
-
   }
 }

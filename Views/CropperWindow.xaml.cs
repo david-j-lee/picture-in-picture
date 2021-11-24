@@ -2,25 +2,25 @@
 
 namespace PictureInPicture.Views
 {
+  /// <summary>
+  /// Logique d'interaction pour CropperWindow.xaml
+  /// </summary>
+  public partial class CropperWindow
+  {
     /// <summary>
-    /// Logique d'interaction pour CropperWindow.xaml
+    /// Constructor
     /// </summary>
-    public partial class CropperWindow
+    public CropperWindow()
     {
+      InitializeComponent();
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public CropperWindow()
+      Loaded += (s, e) =>
+      {
+        if (DataContext is ICloseable closeable)
         {
-            InitializeComponent();
-
-            Loaded += (s, e) =>
-            {
-                if (DataContext is ICloseable closeable)
-                    closeable.RequestClose += (_, __) => Close();
-            };
+          closeable.RequestClose += (_, __) => Close();
         }
-
+      };
     }
+  }
 }

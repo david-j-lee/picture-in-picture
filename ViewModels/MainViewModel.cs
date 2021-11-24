@@ -16,7 +16,6 @@ namespace PictureInPicture.ViewModels
 {
   public class MainViewModel : ViewModelBase, ICloseable
   {
-
     #region public
 
     public event EventHandler<EventArgs> RequestClose;
@@ -78,7 +77,8 @@ namespace PictureInPicture.ViewModels
       WindowsList = new ObservableCollection<WindowInfo>();
 
       ProcessesService.Instance.OpenWindowsChanged += OpenWindowsChanged;
-      ProcessesService.Instance.ForegroundWindowChanged += ForegroundWindowChanged;
+      ProcessesService.Instance.ForegroundWindowChanged +=
+          ForegroundWindowChanged;
       UpdateWindowsList();
     }
 
@@ -91,7 +91,9 @@ namespace PictureInPicture.ViewModels
       var openWindows = ProcessesService.Instance.OpenWindows;
 
       var toAdd = openWindows.Where(x => WindowsList.All(y => x != y));
-      var toRemove = WindowsList.Where(x => openWindows.All(y => x != y)).ToList();
+      var toRemove = WindowsList
+          .Where(x => openWindows.All(y => x != y))
+          .ToList();
 
       foreach (var e in toAdd)
       {
@@ -121,7 +123,9 @@ namespace PictureInPicture.ViewModels
     private void StartPip(NativeStructs.Rect selectedRegion)
     {
       var pip = new PiPModeWindow();
-      MessengerInstance.Send(new SelectedWindow(SelectedWindowInfo, selectedRegion));
+      MessengerInstance.Send(
+          new SelectedWindow(SelectedWindowInfo, selectedRegion)
+      );
       pip.Show();
       RequestClose?.Invoke(this, EventArgs.Empty);
     }
@@ -138,10 +142,14 @@ namespace PictureInPicture.ViewModels
       if (foregroundWindow != null)
       {
         SelectedWindowInfo = foregroundWindow;
-        Logger.Instance.Info("Foreground window updated : " + SelectedWindowInfo.Title);
+        Logger.Instance.Info(
+            "Foreground window updated : " + SelectedWindowInfo.Title
+        );
       }
       else
-        Logger.Instance.Warn("Foreground window updated but window is null");
+        Logger.Instance.Warn(
+            "Foreground window updated but window is null"
+        );
     }
 
     /// <summary>
@@ -149,7 +157,8 @@ namespace PictureInPicture.ViewModels
     /// </summary>
     /// <param name="sender">The source of the event</param>
     /// <param name="e">Event arguments</param>
-    private void OpenWindowsChanged(object sender, EventArgs e) => UpdateWindowsList();
+    private void OpenWindowsChanged(object sender, EventArgs e) =>
+        UpdateWindowsList();
 
     #region commands
 
@@ -182,11 +191,11 @@ namespace PictureInPicture.ViewModels
     {
       Logger.Instance.Info("   |||||| Close MainWindow ||||||   ");
       ProcessesService.Instance.OpenWindowsChanged -= OpenWindowsChanged;
-      ProcessesService.Instance.ForegroundWindowChanged -= ForegroundWindowChanged;
+      ProcessesService.Instance.ForegroundWindowChanged -=
+          ForegroundWindowChanged;
       ProcessesService.Instance.Dispose();
       _cropperWindow?.Close();
     }
-
     #endregion
 
   }

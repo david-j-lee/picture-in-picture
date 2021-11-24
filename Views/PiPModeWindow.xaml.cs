@@ -9,7 +9,6 @@ namespace PictureInPicture.Views
   /// </summary>
   public partial class PiPModeWindow
   {
-
     /// <summary>
     /// Constructor
     /// </summary>
@@ -36,6 +35,5 @@ namespace PictureInPicture.Views
 
       DragMove();
     }
-
   }
 }

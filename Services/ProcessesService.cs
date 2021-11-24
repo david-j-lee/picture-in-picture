@@ -15,7 +15,6 @@ namespace PictureInPicture.Services
 {
   public class ProcessesService : IDisposable
   {
-
     #region public
 
     /// <summary>
@@ -30,24 +29,47 @@ namespace PictureInPicture.Services
 
         SetExcludedProcesses();
 
-        NativeMethods.EnumWindows(delegate (IntPtr hWnd, int lParam)
-        {
-          if (_excludedWindows.Contains(hWnd)) return true;
-          if (hWnd == shellWindow) return true;
-          if (!NativeMethods.IsWindowVisible(hWnd)) return true;
+        NativeMethods.EnumWindows(
+            delegate (IntPtr hWnd, int lParam)
+            {
+              if (_excludedWindows.Contains(hWnd))
+              {
+                return true;
+              }
+              if (hWnd == shellWindow)
+              {
+                return true;
+              }
+              if (!NativeMethods.IsWindowVisible(hWnd))
+              {
+                return true;
+              }
 
-          NativeMethods.DwmGetWindowAttribute(hWnd, DWMWINDOWATTRIBUTE.Cloaked, out bool isCloacked, Marshal.SizeOf(typeof(bool)));
-          if (isCloacked) return true;
+              _ = NativeMethods.DwmGetWindowAttribute(
+                          hWnd,
+                          DWMWINDOWATTRIBUTE.Cloaked,
+                          out bool isCloacked,
+                          Marshal.SizeOf(typeof(bool))
+                      );
+              if (isCloacked)
+              {
+                return true;
+              }
 
-          var length = NativeMethods.GetWindowTextLength(hWnd);
-          if (length == 0) return true;
+              var length = NativeMethods.GetWindowTextLength(hWnd);
+              if (length == 0)
+              {
+                return true;
+              }
 
-          var builder = new StringBuilder(length);
-          NativeMethods.GetWindowText(hWnd, builder, length + 1);
+              var builder = new StringBuilder(length);
+              _ = NativeMethods.GetWindowText(hWnd, builder, length + 1);
 
-          windows.Add(new WindowInfo(hWnd));
-          return true;
-        }, 0);
+              windows.Add(new WindowInfo(hWnd));
+              return true;
+            },
+            0
+        );
 
         return windows;
       }
@@ -60,7 +82,9 @@ namespace PictureInPicture.Services
       get
       {
         var foregroundWindow = NativeMethods.GetForegroundWindow();
-        return OpenWindows.FirstOrDefault(x => x.Handle == foregroundWindow);
+        return OpenWindows.FirstOrDefault(
+            x => x.Handle == foregroundWindow
+        );
       }
     }
     public event EventHandler OpenWindowsChanged;
@@ -69,7 +93,8 @@ namespace PictureInPicture.Services
     /// <summary>
     /// Gets the instance of the singleton
     /// </summary>
-    public static ProcessesService Instance => _instance ?? (_instance = new ProcessesService());
+    public static ProcessesService Instance =>
+        _instance ?? (_instance = new ProcessesService());
 
     #endregion
 
@@ -101,8 +126,10 @@ namespace PictureInPicture.Services
           (uint)EventConstants.EVENT_OBJECT_DESTROY,
           IntPtr.Zero,
           _createDestroyEventProc,
-          0, 0,
-          (uint)EventConstants.WINEVENT_OUTOFCONTEXT | (uint)EventConstants.WINEVENT_SKIPOWNPROCESS
+          0,
+          0,
+          (uint)EventConstants.WINEVENT_OUTOFCONTEXT
+              | (uint)EventConstants.WINEVENT_SKIPOWNPROCESS
       );
 
       _foregroundEventProc = ForegroundEventProc;
@@ -111,8 +138,10 @@ namespace PictureInPicture.Services
           (uint)EventConstants.EVENT_SYSTEM_FOREGROUND,
           IntPtr.Zero,
           _foregroundEventProc,
-          0, 0,
-          (uint)EventConstants.WINEVENT_OUTOFCONTEXT | (uint)EventConstants.WINEVENT_SKIPOWNPROCESS
+          0,
+          0,
+          (uint)EventConstants.WINEVENT_OUTOFCONTEXT
+              | (uint)EventConstants.WINEVENT_SKIPOWNPROCESS
       );
     }
 
@@ -142,10 +171,24 @@ namespace PictureInPicture.Services
     /// <param name="idChild">Identifies whether the event was triggered by an object or a child element of the object</param>
     /// <param name="dwEventThread">Identifies the thread that generated the event, or the thread that owns the current window</param>
     /// <param name="dwmsEventTime">Specifies the time, in milliseconds, that the event was generated</param>
-    private void ForegroundEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
+    private void ForegroundEventProc(
+        IntPtr hWinEventHook,
+        uint eventType,
+        IntPtr hwnd,
+        int idObject,
+        int idChild,
+        uint dwEventThread,
+        uint dwmsEventTime
+    )
     {
-      if (idObject != 0 || idChild != 0 || eventType != (uint)EventConstants.EVENT_SYSTEM_FOREGROUND)
+      if (
+          idObject != 0
+          || idChild != 0
+          || eventType != (uint)EventConstants.EVENT_SYSTEM_FOREGROUND
+      )
+      {
         return;
+      }
       ForegroundWindowChanged?.Invoke(this, new EventArgs());
     }
 
@@ -159,17 +202,31 @@ namespace PictureInPicture.Services
     /// <param name="idChild">Identifies whether the event was triggered by an object or a child element of the object</param>
     /// <param name="dwEventThread">Identifies the thread that generated the event, or the thread that owns the current window</param>
     /// <param name="dwmsEventTime">Specifies the time, in milliseconds, that the event was generated</param>
-    private void CreateDestroyEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
+    private void CreateDestroyEventProc(
+        IntPtr hWinEventHook,
+        uint eventType,
+        IntPtr hwnd,
+        int idObject,
+        int idChild,
+        uint dwEventThread,
+        uint dwmsEventTime
+    )
     {
       if (idObject != 0 || idChild != 0)
+      {
         return;
+      }
 
       if (hwnd == IntPtr.Zero)
+      {
         return;
+      }
 
-      NativeMethods.GetWindowThreadProcessId(hwnd, out var processId);
+      _ = NativeMethods.GetWindowThreadProcessId(hwnd, out var processId);
       if (processId == 0)
+      {
         return;
+      }
 
       switch (eventType)
       {
@@ -177,7 +234,9 @@ namespace PictureInPicture.Services
           try
           {
             if (_processes.ContainsKey((int)processId))
+            {
               return;
+            }
 
             var p = Process.GetProcessById((int)processId);
             _processes.Add(p.Id, p);
@@ -192,7 +251,9 @@ namespace PictureInPicture.Services
           try
           {
             if (!_processes.ContainsKey((int)processId))
+            {
               return;
+            }
 
             var p = Process.GetProcessById((int)processId);
             _processes.Remove(p.Id);
@@ -215,7 +276,9 @@ namespace PictureInPicture.Services
       foreach (var p in Process.GetProcesses())
       {
         if (p.Id != 0)
+        {
           _processes.Add(p.Id, p);
+        }
       }
     }
 
@@ -232,6 +295,5 @@ namespace PictureInPicture.Services
         _excludedWindows.Add(handle);
       }
     }
-
   }
 }

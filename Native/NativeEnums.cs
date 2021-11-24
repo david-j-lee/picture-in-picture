@@ -2,7 +2,6 @@
 
 namespace PictureInPicture.Native
 {
-
   [Flags]
   public enum WindowStyles : uint
   {
@@ -23,20 +22,22 @@ namespace PictureInPicture.Native
     WS_THICKFRAME = 0x00040000,
     WS_GROUP = 0x00020000,
     WS_TABSTOP = 0x00010000,
-
     WS_MINIMIZEBOX = 0x00020000,
     WS_MAXIMIZEBOX = 0x00010000,
-
     WS_CAPTION = WS_BORDER | WS_DLGFRAME,
     WS_TILED = WS_OVERLAPPED,
     WS_ICONIC = WS_MINIMIZE,
     WS_SIZEBOX = WS_THICKFRAME,
     WS_TILEDWINDOW = WS_OVERLAPPEDWINDOW,
-
-    WS_OVERLAPPEDWINDOW = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX,
+    WS_OVERLAPPEDWINDOW =
+        WS_OVERLAPPED
+        | WS_CAPTION
+        | WS_SYSMENU
+        | WS_THICKFRAME
+        | WS_MINIMIZEBOX
+        | WS_MAXIMIZEBOX,
     WS_POPUPWINDOW = WS_POPUP | WS_BORDER | WS_SYSMENU,
     WS_CHILDWINDOW = WS_CHILD,
-
     //Extended Window Styles
 
     WS_EX_DLGMODALFRAME = 0x00000001,
@@ -44,7 +45,6 @@ namespace PictureInPicture.Native
     WS_EX_TOPMOST = 0x00000008,
     WS_EX_ACCEPTFILES = 0x00000010,
     WS_EX_TRANSPARENT = 0x00000020,
-
     //#if(WINVER >= 0x0400)
 
     WS_EX_MDICHILD = 0x00000040,
@@ -52,20 +52,18 @@ namespace PictureInPicture.Native
     WS_EX_WINDOWEDGE = 0x00000100,
     WS_EX_CLIENTEDGE = 0x00000200,
     WS_EX_CONTEXTHELP = 0x00000400,
-
     WS_EX_RIGHT = 0x00001000,
     WS_EX_LEFT = 0x00000000,
     WS_EX_RTLREADING = 0x00002000,
     WS_EX_LTRREADING = 0x00000000,
     WS_EX_LEFTSCROLLBAR = 0x00004000,
     WS_EX_RIGHTSCROLLBAR = 0x00000000,
-
     WS_EX_CONTROLPARENT = 0x00010000,
     WS_EX_STATICEDGE = 0x00020000,
     WS_EX_APPWINDOW = 0x00040000,
-
     WS_EX_OVERLAPPEDWINDOW = (WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE),
-    WS_EX_PALETTEWINDOW = (WS_EX_WINDOWEDGE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST),
+    WS_EX_PALETTEWINDOW =
+        (WS_EX_WINDOWEDGE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST),
     //#endif /* WINVER >= 0x0400 */
 
     //#if(WIN32WINNT >= 0x0500)
@@ -137,7 +135,7 @@ namespace PictureInPicture.Native
     Maximize = 3, // is this the right value?
     /// <summary>
     /// Activates the window and displays it as a maximized window.
-    /// </summary>       
+    /// </summary>
     ShowMaximized = 3,
     /// <summary>
     /// Displays a window in its most recent size and position. This value 
@@ -1090,7 +1088,6 @@ namespace PictureInPicture.Native
     /// The WM_USER constant is used by applications to help define private messages for use by private window classes, usually of the form WM_USER+X, where X is an integer value. 
     /// </summary>
     USER = 0x0400,
-
     /// <summary>
     /// An application sends the WM_CPL_LAUNCH message to Windows Control Panel to request that a Control Panel application be started. 
     /// </summary>
@@ -1103,7 +1100,6 @@ namespace PictureInPicture.Native
     /// WM_SYSTIMER is a well-known yet still undocumented message. Windows uses WM_SYSTIMER for internal actions like scrolling.
     /// </summary>
     SYSTIMER = 0x118,
-
     /// <summary>
     /// The accessibility state has changed.
     /// </summary>
@@ -1160,45 +1156,36 @@ namespace PictureInPicture.Native
     /// <para>different input queues, the system posts the request to the thread that owns the window.</para> 
     /// <para>This prevents the calling thread from blocking its execution while other threads process the request</para>
     ASYNCWINDOWPOS = 0x4000,
-
     /// <summary>Prevents generation of the WM_SYNCPAINT message
     /// </summary>
     DEFERERASE = 0x2000,
-
     /// <summary>Draws a frame (defined in the window's class description) around the window. 
     /// Same as the FRAMECHANGED flag.
     /// </summary>
     DRAWFRAME = 0x0020,
-
     /// <summary>Sends a WM_NCCALCSIZE message to the window, even if the window's size is not being changed. 
     /// If this flag is not specified, WM_NCCALCSIZE is sent only when the window's size is being changed.
     /// </summary>
     FRAMECHANGED = 0x0020,
-
     /// <summary>Hides the window.
     /// </summary>
     HIDEWINDOW = 0x0080,
-
     /// <summary>Does not activate the window. 
     /// If this flag is not set, the window is activated and moved to the top of either the topmost or non-topmost group 
     /// (depending on the setting of the hwndInsertAfter member).
     /// </summary>
     NOACTIVATE = 0x0010,
-
     /// <summary>Discards the entire contents of the client area. 
     /// If this flag is not specified, the valid contents of the client area are saved 
     /// and copied back into the client area after the window is sized or repositioned.
     /// </summary>
     NOCOPYBITS = 0x0100,
-
     /// <summary>Retains the current position (ignores the x and y members).
     /// </summary>
     NOMOVE = 0x0002,
-
     /// <summary>Does not change the owner window's position in the Z order.
     /// </summary>
     NOOWNERZORDER = 0x0200,
-
     /// <summary>Does not redraw changes. 
     /// If this flag is set, no repainting of any kind occurs. 
     /// This applies to the client area, the non-client area (including the title bar and scroll bars), 
@@ -1207,24 +1194,19 @@ namespace PictureInPicture.Native
     /// redraw any parts of the window and parent window that need redrawing.
     /// </summary>
     NOREDRAW = 0x0008,
-
     /// <summary>Does not change the owner window's position in the Z order. 
     /// Same as the NOOWNERZORDER flag.
     /// </summary>
     NOREPOSITION = 0x200,
-
     /// <summary>Prevents the window from receiving the WM_WINDOWPOSCHANGING message.
     /// </summary>
     NOSENDCHANGING = 0x0400,
-
     /// <summary>Retains the current size (ignores the cx and cy members).
     /// </summary>
     NOSIZE = 0x0001,
-
     /// <summary>Retains the current Z order (ignores the hwndInsertAfter member).
     /// </summary>
     NOZORDER = 0x0004,
-
     /// <summary>Displays the window.
     /// </summary>
     SHOWWINDOW = 0x0040,
@@ -1328,7 +1310,6 @@ namespace PictureInPicture.Native
     /// Shading and Blending caps
     /// </summary>
     SHADEBLENDCAPS = 45,
-
     /// <summary>
     /// Logical pixels inch in X
     /// </summary>
@@ -1337,7 +1318,6 @@ namespace PictureInPicture.Native
     /// Logical pixels inch in Y
     /// </summary>
     LOGPIXELSY = 90,
-
     /// <summary>
     /// Number of entries in physical palette
     /// </summary>
@@ -1350,7 +1330,6 @@ namespace PictureInPicture.Native
     /// Actual color resolution
     /// </summary>
     COLORRES = 108,
-
     // Printing related DeviceCaps. These replace the appropriate Escapes
     /// <summary>
     /// Physical Width in device units
@@ -1376,7 +1355,6 @@ namespace PictureInPicture.Native
     /// Scaling factor y
     /// </summary>
     SCALINGFACTORY = 115,
-
     /// <summary>
     /// Current vertical refresh rate of the display device (for displays only) in Hz
     /// </summary>
@@ -1487,23 +1465,19 @@ namespace PictureInPicture.Native
     /// <para>Effective DPI that incorporates accessibility overrides and matches what Desktop Window Manage (DWM) uses to scale desktop applications.</para>
     /// </summary>
     MDT_EFFECTIVE_DPI = 0,
-
     /// <summary>
     /// MDT_Angular_DPI
     /// <para>DPI that ensures rendering at a compliant angular resolution on the screen, without incorporating accessibility overrides.</para>
     /// </summary>
     MDT_ANGULAR_DPI = 1,
-
     /// <summary>
     /// MDT_Raw_DPI
     /// <para>Linear DPI of the screen as measures on the screen itself.</para>
     /// </summary>
     MDT_RAW_DPI = 2,
-
     /// <summary>
     /// MDT_Default
     /// </summary>
     MDT_DEFAULT = MDT_EFFECTIVE_DPI,
   }
-
 }

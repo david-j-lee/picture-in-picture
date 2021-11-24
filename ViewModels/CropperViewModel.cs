@@ -16,7 +16,6 @@ namespace PictureInPicture.ViewModels
 {
   public class CropperViewModel : ViewModelBase, ICloseable
   {
-
     #region public
 
     /// <summary>
@@ -38,11 +37,15 @@ namespace PictureInPicture.ViewModels
     /// <summary>
     /// Gets selected region
     /// </summary>
-    public NativeStructs.Rect SelectedRegion => new NativeStructs.Rect(Left, Top, Width + Left, Top + Height);
+    public NativeStructs.Rect SelectedRegion =>
+        new NativeStructs.Rect(Left, Top, Width + Left, Top + Height);
 
     public const int DefaultPosition = 0;
-    public bool RegionHasBeenModified => Top != DefaultPosition || Left != DefaultPosition ||
-                                         Height != Constants.MinCropperSize || Width != Constants.MinCropperSize;
+    public bool RegionHasBeenModified =>
+        Top != DefaultPosition
+        || Left != DefaultPosition
+        || Height != Constants.MinCropperSize
+        || Width != Constants.MinCropperSize;
 
     /// <summary>
     /// Gets or sets top property of the window
@@ -277,7 +280,10 @@ namespace PictureInPicture.ViewModels
 
       ClosingCommand = new RelayCommand(ClosingCommandExecute);
       MessengerInstance.Register<WindowInfo>(this, Init);
-      MessengerInstance.Register<Action<NativeStructs.Rect>>(this, StartPip);
+      MessengerInstance.Register<Action<NativeStructs.Rect>>(
+          this,
+          StartPip
+      );
     }
 
     /// <summary>
@@ -307,7 +313,12 @@ namespace PictureInPicture.ViewModels
       WindowLeft = _windowInfo.Position.X;
       WindowWidth = _windowInfo.Rect.Width;
       WindowHeight = _windowInfo.Rect.Height;
-      CanvasMargin = new Thickness(_windowInfo.Border.Left, _windowInfo.Border.Top, _windowInfo.Border.Right, _windowInfo.Border.Bottom);
+      CanvasMargin = new Thickness(
+          _windowInfo.Border.Left,
+          _windowInfo.Border.Top,
+          _windowInfo.Border.Right,
+          _windowInfo.Border.Bottom
+      );
 
       MaxHeight = _sizeRestriction.Height;
       MaxWidth = _sizeRestriction.Width;
@@ -371,7 +382,9 @@ namespace PictureInPicture.ViewModels
     private Window ThisWindow()
     {
       var windowsList = Application.Current.Windows.Cast<Window>();
-      return windowsList.FirstOrDefault(window => window.DataContext == this);
+      return windowsList.FirstOrDefault(
+          window => window.DataContext == this
+      );
     }
 
     /// <summary>
@@ -429,7 +442,6 @@ namespace PictureInPicture.ViewModels
       MessengerInstance.Unregister<WindowInfo>(this);
       MessengerInstance.Unregister<Action<NativeStructs.Rect>>(this);
     }
-
     #endregion
 
   }

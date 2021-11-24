@@ -7,7 +7,6 @@ namespace PictureInPicture.Native
 {
   public static class NativeStructs
   {
-
     [StructLayout(LayoutKind.Sequential)]
     public struct WINDOWINFO
     {
@@ -22,7 +21,7 @@ namespace PictureInPicture.Native
       public ushort atomWindowType;
       public ushort wCreatorVersion;
 
-      public WINDOWINFO(bool? filler) : this()   // Allows automatic initialization of "cbSize" with "new WINDOWINFO(null/true/false)".
+      public WINDOWINFO(bool? filler) : this() // Allows automatic initialization of "cbSize" with "new WINDOWINFO(null/true/false)".
       {
         cbSize = (uint)(Marshal.SizeOf(typeof(WINDOWINFO)));
       }
@@ -67,7 +66,10 @@ namespace PictureInPicture.Native
     [StructLayout(LayoutKind.Sequential)]
     public struct Rect
     {
-      public int Left, Top, Right, Bottom;
+      public int Left,
+          Top,
+          Right,
+          Bottom;
 
       public Rect(int left, int top, int right, int bottom)
       {
@@ -77,18 +79,27 @@ namespace PictureInPicture.Native
         Bottom = bottom;
       }
 
-      public Rect(Rectangle r) : this(r.Left, r.Top, r.Right, r.Bottom) { }
+      public Rect(Rectangle r) : this(r.Left, r.Top, r.Right, r.Bottom)
+      { }
 
       public int X
       {
         get => Left;
-        set { Right -= (Left - value); Left = value; }
+        set
+        {
+          Right -= (Left - value);
+          Left = value;
+        }
       }
 
       public int Y
       {
         get => Top;
-        set { Bottom -= (Top - value); Top = value; }
+        set
+        {
+          Bottom -= (Top - value);
+          Top = value;
+        }
       }
 
       public int Height
@@ -106,13 +117,21 @@ namespace PictureInPicture.Native
       public Point Location
       {
         get => new Point(Left, Top);
-        set { X = value.X; Y = value.Y; }
+        set
+        {
+          X = value.X;
+          Y = value.Y;
+        }
       }
 
       public Size Size
       {
         get => new Size(Width, Height);
-        set { Width = value.Width; Height = value.Height; }
+        set
+        {
+          Width = value.Width;
+          Height = value.Height;
+        }
       }
 
       public static implicit operator Rectangle(Rect r)
@@ -137,22 +156,40 @@ namespace PictureInPicture.Native
 
       public static Rect operator -(Rect r1, Rect r2)
       {
-        return new Rectangle(r1.Left, r1.Top, r1.Width - (r2.Left + r2.Right), r1.Height - (r2.Top + r2.Bottom));
+        return new Rectangle(
+            r1.Left,
+            r1.Top,
+            r1.Width - (r2.Left + r2.Right),
+            r1.Height - (r2.Top + r2.Bottom)
+        );
       }
 
       public static Rect operator *(Rect r1, float f)
       {
-        return new Rectangle(r1.Left, r1.Top, (int)(r1.Width * f), (int)(r1.Height * f));
+        return new Rectangle(
+            r1.Left,
+            r1.Top,
+            (int)(r1.Width * f),
+            (int)(r1.Height * f)
+        );
       }
 
       public static Rect operator /(Rect r1, float f)
       {
-        return new Rectangle(r1.Left, r1.Top, (int)(r1.Width / f), (int)(r1.Height / f));
+        return new Rectangle(
+            r1.Left,
+            r1.Top,
+            (int)(r1.Width / f),
+            (int)(r1.Height / f)
+        );
       }
 
       public bool Equals(Rect r)
       {
-        return r.Left == Left && r.Top == Top && r.Right == Right && r.Bottom == Bottom;
+        return r.Left == Left
+            && r.Top == Top
+            && r.Right == Right
+            && r.Bottom == Bottom;
       }
 
       public override bool Equals(object obj)
@@ -171,9 +208,15 @@ namespace PictureInPicture.Native
 
       public override string ToString()
       {
-        return String.Format(CultureInfo.CurrentCulture, "{{Left={0},Top={1},Right={2},Bottom={3}}}", Left, Top, Right, Bottom);
+        return String.Format(
+            CultureInfo.CurrentCulture,
+            "{{Left={0},Top={1},Right={2},Bottom={3}}}",
+            Left,
+            Top,
+            Right,
+            Bottom
+        );
       }
     }
-
   }
 }

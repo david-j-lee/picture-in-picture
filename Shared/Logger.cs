@@ -6,10 +6,10 @@ namespace PictureInPicture.Shared
 {
   public class Logger
   {
-
     #region public
 
-    public static Logger Instance => _instance ?? (_instance = new Logger());
+    public static Logger Instance =>
+        _instance ?? (_instance = new Logger());
 
     #endregion
 

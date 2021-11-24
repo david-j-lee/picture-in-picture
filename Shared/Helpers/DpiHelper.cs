@@ -6,7 +6,6 @@ namespace PictureInPicture.Shared.Helpers
 {
   public static class DpiHelper
   {
-
     /// <summary>
     /// Get monitor dpi for a window
     /// </summary>
@@ -17,8 +16,16 @@ namespace PictureInPicture.Shared.Helpers
     {
       try
       {
-        var handle = NativeMethods.MonitorFromWindow(hwnd, MonitorDefaultTo.MONITOR_DEFAULTTONEAREST);
-        NativeMethods.GetDpiForMonitor(handle, MONITOR_DPI_TYPE.MDT_EFFECTIVE_DPI, out var x, out var y);
+        var handle = NativeMethods.MonitorFromWindow(
+            hwnd,
+            MonitorDefaultTo.MONITOR_DEFAULTTONEAREST
+        );
+        NativeMethods.GetDpiForMonitor(
+            handle,
+            MONITOR_DPI_TYPE.MDT_EFFECTIVE_DPI,
+            out var x,
+            out var y
+        );
 
         dpiX = x / 96f;
         dpiY = y / 96f;

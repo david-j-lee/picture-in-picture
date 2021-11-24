@@ -11,7 +11,6 @@ namespace PictureInPicture.DataModel
 {
   public class WindowInfo
   {
-
     #region public
 
     public IntPtr Handle { get; }
@@ -24,17 +23,24 @@ namespace PictureInPicture.DataModel
     public NativeStructs.Rect Rect { get; private set; }
     public NativeStructs.Rect Border { get; set; }
 
-    public NativeStructs.Rect RectNoBorder => new NativeStructs.Rect(
-        Position.X + Border.Left,
-        Position.Y + Border.Top,
-        Rect.Width - (Border.Left + Border.Right) + Position.X + Border.Left,
-        Rect.Height - (Border.Top + Border.Bottom) + Position.Y + Border.Top
-    );
+    public NativeStructs.Rect RectNoBorder =>
+        new NativeStructs.Rect(
+            Position.X + Border.Left,
+            Position.Y + Border.Top,
+            Rect.Width - (Border.Left + Border.Right)
+                + Position.X
+                + Border.Left,
+            Rect.Height - (Border.Top + Border.Bottom)
+                + Position.Y
+                + Border.Top
+        );
 
     /// <summary>
     /// Gets if window is minimized
     /// </summary>
-    public bool IsMinimized => (_winInfo.dwStyle & (uint)WindowStyles.WS_MINIMIZE) == (uint)WindowStyles.WS_MINIMIZE;
+    public bool IsMinimized =>
+        (_winInfo.dwStyle & (uint)WindowStyles.WS_MINIMIZE)
+        == (uint)WindowStyles.WS_MINIMIZE;
 
     #endregion
 
@@ -86,7 +92,10 @@ namespace PictureInPicture.DataModel
     /// </summary>
     private void GetSizeAndPosition()
     {
-      if (!NativeMethods.GetWindowRect(Handle, out var rct)) return;
+      if (!NativeMethods.GetWindowRect(Handle, out var rct))
+      {
+        return;
+      }
 
       //DpiHelper.GetDpi(Handle, out var dpiX, out var dpiY);
       DpiHelper.GetPrimaryDpi(out var dpiPrimaryX, out var dpiPrimaryY);
@@ -98,8 +107,14 @@ namespace PictureInPicture.DataModel
           (int)(rct.Bottom / DpiY)
       );
       Rect = temprct;
-      Position = new Point((int)(rct.Left / dpiPrimaryX), (int)(rct.Top / dpiPrimaryY));
-      Size = new Size(temprct.Right - temprct.Left + 1, temprct.Bottom - temprct.Top + 1);
+      Position = new Point(
+          (int)(rct.Left / dpiPrimaryX),
+          (int)(rct.Top / dpiPrimaryY)
+      );
+      Size = new Size(
+          temprct.Right - temprct.Left + 1,
+          temprct.Bottom - temprct.Top + 1
+      );
     }
 
     /// <summary>
@@ -109,7 +124,9 @@ namespace PictureInPicture.DataModel
     {
       NativeMethods.GetWindowThreadProcessId(Handle, out var processId);
       if (processId == 0)
+      {
         return;
+      }
       Program = Process.GetProcessById((int)processId).ProcessName;
     }
 
@@ -119,7 +136,10 @@ namespace PictureInPicture.DataModel
     private void GetTitle()
     {
       var length = NativeMethods.GetWindowTextLength(Handle);
-      if (length == 0) return;
+      if (length == 0)
+      {
+        return;
+      }
 
       var builder = new StringBuilder(length);
       NativeMethods.GetWindowText(Handle, builder, length + 1);
@@ -151,7 +171,12 @@ namespace PictureInPicture.DataModel
     /// </summary>
     private void GetBorder()
     {
-      NativeMethods.DwmGetWindowAttribute(Handle, DWMWINDOWATTRIBUTE.ExtendedFrameBounds, out NativeStructs.Rect frame, Marshal.SizeOf(typeof(NativeStructs.Rect)));
+      _ = NativeMethods.DwmGetWindowAttribute(
+          Handle,
+          DWMWINDOWATTRIBUTE.ExtendedFrameBounds,
+          out NativeStructs.Rect frame,
+          Marshal.SizeOf(typeof(NativeStructs.Rect))
+      );
 
       Border = new NativeStructs.Rect(
           (int)(Math.Floor(frame.Left / DpiX) - Rect.Left),
@@ -168,7 +193,8 @@ namespace PictureInPicture.DataModel
     /// <returns>Handles are equals</returns>
     public override bool Equals(object obj)
     {
-      return obj is WindowInfo windowInfo && Handle.Equals(windowInfo.Handle);
+      return obj is WindowInfo windowInfo
+          && Handle.Equals(windowInfo.Handle);
     }
 
     /// <summary>
@@ -211,6 +237,5 @@ namespace PictureInPicture.DataModel
     {
       return !Equals(left, right);
     }
-
   }
 }
