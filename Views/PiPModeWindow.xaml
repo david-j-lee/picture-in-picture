@@ -6,9 +6,20 @@
   xmlns:viewModels="clr-namespace:PictureInPicture.ViewModels"
   xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
   xmlns:command="http://www.galasoft.ch/mvvmlight"
-  mc:Ignorable="d" Title="{Binding Title, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-  ResizeMode="CanResizeWithGrip" AllowsTransparency="True" MinHeight="{Binding MinHeight, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MinWidth="{Binding MinWidth, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height="{Binding Height, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Width="{Binding Width, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Top="{Binding Top, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Left="{Binding Left, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-  WindowStyle="None" x:Name="Window" Topmost="True" WindowStartupLocation="Manual">
+  mc:Ignorable="d"
+  Title="{Binding Title, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+  ResizeMode="CanResizeWithGrip"
+  AllowsTransparency="True"
+  MinHeight="{Binding MinHeight, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+  MinWidth="{Binding MinWidth, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+  Height="{Binding Height, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+  Width="{Binding Width, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+  Top="{Binding Top, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+  Left="{Binding Left, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+  WindowStyle="None"
+  x:Name="Window"
+  Topmost="True"
+  WindowStartupLocation="Manual">
 
   <Window.DataContext>
     <viewModels:PiPModeViewModel />
@@ -16,16 +27,20 @@
 
   <i:Interaction.Triggers>
     <i:EventTrigger EventName="Loaded">
-      <command:EventToCommand Command="{Binding LoadedCommand}" PassEventArgsToCommand="True" />
+      <command:EventToCommand Command="{Binding LoadedCommand}"
+        PassEventArgsToCommand="True" />
     </i:EventTrigger>
     <i:EventTrigger EventName="SizeChanged">
-      <command:EventToCommand Command="{Binding SizeChangedCommand}" PassEventArgsToCommand="True" />
+      <command:EventToCommand Command="{Binding SizeChangedCommand}"
+        PassEventArgsToCommand="True" />
     </i:EventTrigger>
     <i:EventTrigger EventName="MouseEnter">
-      <command:EventToCommand Command="{Binding MouseEnterCommand}" PassEventArgsToCommand="True" />
+      <command:EventToCommand Command="{Binding MouseEnterCommand}"
+        PassEventArgsToCommand="True" />
     </i:EventTrigger>
     <i:EventTrigger EventName="MouseLeave">
-      <command:EventToCommand Command="{Binding MouseLeaveCommand}" PassEventArgsToCommand="True" />
+      <command:EventToCommand Command="{Binding MouseLeaveCommand}"
+        PassEventArgsToCommand="True" />
     </i:EventTrigger>
     <i:EventTrigger EventName="DpiChanged">
       <command:EventToCommand Command="{Binding DpiChangedCommand}" />
@@ -36,10 +51,34 @@
     <StaticResource ResourceKey="Background" />
   </Window.Background>
 
-  <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-    <Grid x:Name="TopBar" Visibility="{Binding TopBarVisibility, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" HorizontalAlignment="Right">
-      <Button HorizontalAlignment="Left" ToolTip="{StaticResource Quit}" VerticalAlignment="Top" Command="{Binding CloseCommand}" Height="30" Width="30" BorderBrush="#e81123" Opacity="0.5" FontFamily="/PictureInPicture;component/Assets/#Flaticon" Content="" Foreground="White" />
-      <Button HorizontalAlignment="Left" ToolTip="{StaticResource SelectNewWindow}" VerticalAlignment="Top" Command="{Binding ChangeSelectedWindowCommand}" Height="30" Width="30" BorderBrush="#FF7C7C7C" Opacity="0.5" Margin="-30,0,0,0" FontFamily="/PictureInPicture;component/Assets/#Flaticon" Content="" Foreground="White" />
+  <Grid VerticalAlignment="Stretch"
+    HorizontalAlignment="Stretch">
+    <Grid x:Name="TopBar"
+      Visibility="{Binding TopBarVisibility, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+      HorizontalAlignment="Right">
+      <Button HorizontalAlignment="Left"
+        ToolTip="{StaticResource Quit}"
+        VerticalAlignment="Top"
+        Command="{Binding CloseCommand}"
+        Height="30"
+        Width="30"
+        BorderBrush="#e81123"
+        Opacity="0.5"
+        FontFamily="/PictureInPicture;component/Assets/#Flaticon"
+        Content=""
+        Foreground="White" />
+      <Button HorizontalAlignment="Left"
+        ToolTip="{StaticResource SelectNewWindow}"
+        VerticalAlignment="Top"
+        Command="{Binding ChangeSelectedWindowCommand}"
+        Height="30"
+        Width="30"
+        BorderBrush="#FF7C7C7C"
+        Opacity="0.5"
+        Margin="-30,0,0,0"
+        FontFamily="/PictureInPicture;component/Assets/#Flaticon"
+        Content=""
+        Foreground="White" />
     </Grid>
   </Grid>
 
