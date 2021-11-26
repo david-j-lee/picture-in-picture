@@ -7,14 +7,12 @@
   xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
   xmlns:viewModels="clr-namespace:PictureInPicture.ViewModels"
   mc:Ignorable="d"
-  Topmost="True"
-  AllowsTransparency="True"
-  ResizeMode="NoResize"
-  BorderThickness="1, 0, 1, 1"
-  Height="50"
+  BorderThickness="1, 1, 1, 1"
+  Height="150"
   Width="450"
-  WindowStyle="None"
-  Title="PictureInPicture">
+  MinHeight="150"
+  MinWidth="450"
+  Title="Picture in Picture">
 
   <Window.DataContext>
     <viewModels:MainViewModel />
