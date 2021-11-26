@@ -1,10 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Window x:Class="PictureInPicture.Views.MainWindow"
+﻿<Window x:Class="PictureInPicture.Views.MainWindow"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+  xmlns:fa5="http://schemas.fontawesome.com/icons/"
   xmlns:viewModels="clr-namespace:PictureInPicture.ViewModels"
   mc:Ignorable="d"
   BorderThickness="1, 1, 1, 1"
@@ -32,32 +32,19 @@
   </Window.BorderBrush>
 
   <Grid>
-    <Label x:Name="drag"
-      ToolTip="{StaticResource DragThisWindow}"
+    <ComboBox ItemsSource="{Binding WindowsList, UpdateSourceTrigger=PropertyChanged}"
+      SelectedItem="{Binding SelectedWindowInfo}"
+      DisplayMemberPath="Title"
+      Text="Select window"
+      ToolTip="{StaticResource SelectWindow}"
       HorizontalAlignment="Left"
       VerticalAlignment="Top"
-      HorizontalContentAlignment="Center"
-      VerticalContentAlignment="Center"
-      Width="30"
-      Height="50"
-      FontSize="16"
-      Opacity="0.5"
-      FontFamily="/PictureInPicture;component/Assets/#Flaticon"
-      Content=""
-      Foreground="White" />
-
-    <ComboBox HorizontalAlignment="Left"
-      ToolTip="{StaticResource SelectWindow}"
-      VerticalAlignment="Top"
-      Margin="30,0,0,-1"
-      Width="320"
-      Height="50"
       BorderThickness="0"
       FontSize="14"
-      Opacity="0.5"
-      ItemsSource="{Binding WindowsList, UpdateSourceTrigger=PropertyChanged}"
-      DisplayMemberPath="Title"
-      SelectedItem="{Binding SelectedWindowInfo}">
+      Margin="5"
+      Width="320"
+      Height="50"
+      Opacity="0.5">
       <ComboBox.ItemContainerStyle>
         <Style TargetType="ComboBoxItem"
           BasedOn="{StaticResource {x:Type ComboBoxItem}}">
@@ -79,24 +66,12 @@
       Opacity="0.5"
       Command="{Binding StartPipCommand}"
       BorderThickness="0"
-      FontFamily="/PictureInPicture;component/Assets/#Flaticon"
-      Content=""
-      Foreground="White" />
-
-    <Button x:Name="ButtonQuit"
-      ToolTip="{StaticResource Quit}"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Top"
-      Margin="400,0,0,0"
-      Width="50"
-      Height="50"
-      FontSize="14"
-      BorderBrush="#e81123"
-      Opacity="0.5"
-      Command="{Binding QuitCommand}"
-      BorderThickness="0"
-      FontFamily="/PictureInPicture;component/Assets/#Flaticon"
-      Content=""
-      Foreground="White" />
+      Foreground="White">
+      <fa5:SvgAwesome Icon="Solid_Expand"
+        Width="10"
+        Foreground="White"
+        VerticalAlignment="Center"
+        HorizontalAlignment="Center" />
+    </Button>
   </Grid>
 </Window>
