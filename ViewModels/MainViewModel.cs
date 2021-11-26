@@ -32,8 +32,9 @@ namespace PictureInPicture.ViewModels
       get => _selectedWindowInfo;
       set
       {
-        if (_selectedWindowInfo == value)
+        if (_selectedWindowInfo == value) {
           return;
+        }
         _selectedWindowInfo = value;
         ShowCropper();
         RaisePropertyChanged();
