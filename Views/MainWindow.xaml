@@ -7,7 +7,7 @@
   xmlns:fa5="http://schemas.fontawesome.com/icons/"
   xmlns:viewModels="clr-namespace:PictureInPicture.ViewModels"
   mc:Ignorable="d"
-  BorderThickness="1, 1, 1, 1"
+  BorderThickness="0"
   Height="150"
   Width="450"
   MinHeight="150"
