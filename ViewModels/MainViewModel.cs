@@ -24,6 +24,11 @@ namespace PictureInPicture.ViewModels
     public ICommand QuitCommand { get; }
     public ICommand ClosingCommand { get; }
 
+    public bool HasSelectedWindowInfo
+    {
+      get => SelectedWindowInfo != null;
+    }
+
     /// <summary>
     /// Gets or sets selected window info and call <see cref="ShowCropper"/>
     /// </summary>
@@ -39,6 +44,7 @@ namespace PictureInPicture.ViewModels
         _selectedWindowInfo = value;
         ShowCropper();
         RaisePropertyChanged();
+        RaisePropertyChanged(nameof(HasSelectedWindowInfo));
       }
     }
     /// <summary>
@@ -77,6 +83,8 @@ namespace PictureInPicture.ViewModels
       ClosingCommand = new RelayCommand(ClosingCommandExecute);
 
       WindowsList = new ObservableCollection<WindowInfo>();
+
+      MessengerInstance.Register<WindowInfo>(this, SaveWindowInfo);
 
       ProcessesService.Instance.OpenWindowsChanged += OpenWindowsChanged;
       // TODO: Make this opt in with toggle in main window before window selection
@@ -121,6 +129,11 @@ namespace PictureInPicture.ViewModels
       _cropperWindow.Show();
     }
 
+    private void SaveWindowInfo(WindowInfo windowInfo)
+    {
+      SelectedWindowInfo = windowInfo;
+    }
+
     /// <summary>
     /// Callback in <see cref="StartPipCommandExecute"/>. Show <see cref="PiPModeWindow"/> and send selected window
     /// </summary>
@@ -132,7 +145,6 @@ namespace PictureInPicture.ViewModels
           new SelectedWindow(SelectedWindowInfo, selectedRegion)
       );
       pip.Show();
-      RequestClose?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>
@@ -184,7 +196,14 @@ namespace PictureInPicture.ViewModels
     /// </summary>
     private void StartPipCommandExecute()
     {
-      MessengerInstance.Send<Action<NativeStructs.Rect>>(StartPip);
+      if (SelectedWindowInfo == null)
+      {
+        MessengerInstance.Send<Action<NativeStructs.Rect>>(StartPip);
+      }
+      else
+      {
+        StartPip(SelectedWindowInfo.Rect);
+      }
     }
 
     /// <summary>
@@ -202,12 +221,16 @@ namespace PictureInPicture.ViewModels
     private void ClosingCommandExecute()
     {
       Logger.Instance.Info("   |||||| Close MainWindow ||||||   ");
-      CloseAllWindows();
+
+      MessengerInstance.Unregister<SelectedWindow>(this);
       ProcessesService.Instance.OpenWindowsChanged -= OpenWindowsChanged;
       // TODO: Uncomment once opt-in support is available
       // ProcessesService.Instance.ForegroundWindowChanged -=
       //     ForegroundWindowChanged;
       ProcessesService.Instance.Dispose();
+
+      CloseAllWindows();
+
       _cropperWindow?.Close();
     }
     #endregion
