@@ -469,8 +469,19 @@ namespace PictureInPicture.ViewModels
     /// </summary>
     private void CloseCommandExecute()
     {
+      MessengerInstance.Send<WindowInfo>(null);
       MessengerInstance.Unregister<SelectedWindow>(this);
       RequestClose?.Invoke(this, EventArgs.Empty);
+
+      // TODO: This is a poor way to focus back to the MainViewModel.
+      // It assumes there is only one window left after closing this one, which
+      // should always be true, however, if we were to introduce multiple
+      // picture in picture windows this has the potential to break.
+      var windowsList = Application.Current.Windows.Cast<Window>();
+      if (windowsList.Any())
+      {
+        windowsList.First().Focus();
+      }
     }
     #endregion
 

@@ -52,8 +52,8 @@
 
   <Grid VerticalAlignment="Stretch"
     HorizontalAlignment="Stretch">
-    <Grid x:Name="TopBar"
-      Visibility="{Binding TopBarVisibility, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+    <Grid x:Name="Controls"
+      Visibility="{Binding ControlsVisibility, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
       <Button Command="{Binding ChangeSelectedWindowCommand}"
         VerticalAlignment="Center"
         HorizontalAlignment="Center"

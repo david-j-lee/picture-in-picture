@@ -136,7 +136,7 @@ namespace PictureInPicture.ViewModels
     /// <summary>
     /// Gets or sets visibility of the topbar
     /// </summary>
-    public Visibility TopBarVisibility
+    public Visibility ControlVisibility
     {
       get => _topBarVisibility;
       set
@@ -149,7 +149,7 @@ namespace PictureInPicture.ViewModels
     /// <summary>
     /// Gets if topbar is visible
     /// </summary>
-    public bool TopBarIsVisible => TopBarVisibility == Visibility.Visible;
+    public bool ControlsAreVisible => ControlVisibility == Visibility.Visible;
 
     #endregion
 
@@ -239,7 +239,7 @@ namespace PictureInPicture.ViewModels
 
       _selectedWindow = selectedWindow;
       _renderSizeEventDisabled = true;
-      TopBarVisibility = Visibility.Hidden;
+      ControlVisibility = Visibility.Hidden;
       Ratio = _selectedWindow.Ratio;
 
       DpiChangedCommandExecute();
@@ -547,14 +547,14 @@ namespace PictureInPicture.ViewModels
     /// <param name="e">Event arguments</param>
     private void MouseEnterCommandExecute(MouseEventArgs e)
     {
-      if (TopBarIsVisible)
+      if (ControlsAreVisible)
       {
         return;
       }
       _renderSizeEventDisabled = true;
       // TODO: only set opacity on video, this is also effecting the button
       _opacity = Constants.PiPOpacityOnHover;
-      TopBarVisibility = Visibility.Visible;
+      ControlVisibility = Visibility.Visible;
       _renderSizeEventDisabled = false;
       e.Handled = true;
     }
@@ -576,11 +576,11 @@ namespace PictureInPicture.ViewModels
       );
       var pa = new Point(Convert.ToInt32(p.X), Convert.ToInt32(p.Y));
 
-      if (!TopBarIsVisible || r.Contains(pa))
+      if (!ControlsAreVisible || r.Contains(pa))
       {
         return;
       }
-      TopBarVisibility = Visibility.Hidden;
+      ControlVisibility = Visibility.Hidden;
       _renderSizeEventDisabled = true;
       _opacity = 255;
       _renderSizeEventDisabled = false;

@@ -42,7 +42,10 @@ namespace PictureInPicture.ViewModels
           return;
         }
         _selectedWindowInfo = value;
-        ShowCropper();
+        if (value != null)
+        {
+          ShowCropper();
+        }
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(HasSelectedWindowInfo));
       }
