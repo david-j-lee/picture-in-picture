@@ -1,18 +1,7 @@
-## Developer Notes
+## TODO
 
-### Components
+- Remember position of PiP window
+- Cancel should not clear window data on edits
+- Update text on lower section depending on state of form
 
-- Main
-  - No selection
-    - Window selector
-  - With selection
-    - Edit window setup
-    - Enable/Disable PiP window
-    - Lock pip box
-- PiP window setup
-  - Top buttons
-    - Exit
-- Pip box
-  - Move
-  - Resize
-  - Close/Hide
+- Toggle transparency on hover effects, separate from locking
