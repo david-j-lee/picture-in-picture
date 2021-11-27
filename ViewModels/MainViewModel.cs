@@ -165,6 +165,18 @@ namespace PictureInPicture.ViewModels
     private void OpenWindowsChanged(object sender, EventArgs e) =>
         UpdateWindowsList();
 
+    private void CloseAllWindows()
+    {
+      var windowsList = Application.Current.Windows.Cast<Window>();
+      foreach (var window in windowsList)
+      {
+        if (window.DataContext != this)
+        {
+          window.Close();
+        }
+      }
+    }
+
     #region commands
 
     /// <summary>
@@ -180,12 +192,7 @@ namespace PictureInPicture.ViewModels
     /// </summary>
     private void QuitCommandExecute()
     {
-      var windowsList = Application.Current.Windows.Cast<Window>();
-      foreach (var window in windowsList)
-      {
-        if (window.DataContext != this)
-          window.Close();
-      }
+      CloseAllWindows();
       RequestClose?.Invoke(this, EventArgs.Empty);
     }
 
@@ -195,6 +202,7 @@ namespace PictureInPicture.ViewModels
     private void ClosingCommandExecute()
     {
       Logger.Instance.Info("   |||||| Close MainWindow ||||||   ");
+      CloseAllWindows();
       ProcessesService.Instance.OpenWindowsChanged -= OpenWindowsChanged;
       // TODO: Uncomment once opt-in support is available
       // ProcessesService.Instance.ForegroundWindowChanged -=

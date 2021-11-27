@@ -122,7 +122,7 @@ namespace PictureInPicture.DataModel
     /// </summary>
     private void GetProgram()
     {
-      NativeMethods.GetWindowThreadProcessId(Handle, out var processId);
+      _ = NativeMethods.GetWindowThreadProcessId(Handle, out var processId);
       if (processId == 0)
       {
         return;
@@ -142,7 +142,7 @@ namespace PictureInPicture.DataModel
       }
 
       var builder = new StringBuilder(length);
-      NativeMethods.GetWindowText(Handle, builder, length + 1);
+      _ = NativeMethods.GetWindowText(Handle, builder, length + 1);
       Title = builder.ToString();
     }
 

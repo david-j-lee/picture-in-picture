@@ -55,10 +55,10 @@
   <Grid VerticalAlignment="Stretch"
     HorizontalAlignment="Stretch">
     <Grid x:Name="TopBar"
-      Visibility="{Binding TopBarVisibility, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-      HorizontalAlignment="Right">
-      <!-- <Button ToolTip="{StaticResource Quit}"
+      Visibility="{Binding TopBarVisibility, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+      <Button ToolTip="{StaticResource Quit}"
         Command="{Binding CloseCommand}"
+        VerticalAlignment="Top"
         Height="30"
         Width="30">
         <fa5:SvgAwesome Icon="Solid_Lock"
@@ -66,13 +66,14 @@
           Foreground="White"
           VerticalAlignment="Center"
           HorizontalAlignment="Center" />
-      </Button> -->
+      </Button>
       <Button ToolTip="{StaticResource SelectNewWindow}"
         Command="{Binding ChangeSelectedWindowCommand}"
+        VerticalAlignment="Top"
         Height="30"
         Width="30"
         Foreground="White">
-        <fa5:SvgAwesome Icon="Solid_Lock"
+        <fa5:SvgAwesome Icon="Solid_Times"
           Width="10"
           Foreground="White"
           VerticalAlignment="Center"

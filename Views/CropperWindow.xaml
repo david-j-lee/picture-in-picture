@@ -55,7 +55,7 @@
         <StackPanel Orientation="Horizontal"
           HorizontalAlignment="Center">
           <Button ToolTip="{StaticResource SetupFocusedWindow}"
-            Command="{Binding }"
+            Command="{Binding StartCommand}"
             Margin="5, 5, 1, 5"
             Height="30"
             Width="30">

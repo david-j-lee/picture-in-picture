@@ -28,6 +28,8 @@ namespace PictureInPicture.Shared
         "logs.txt"
     );
 
-    public static int MinCropperSize => 100;
+    public static int MinCropperWidth => 320;
+
+    public static int MinCropperHeight => 180;
   }
 }

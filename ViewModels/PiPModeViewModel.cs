@@ -503,7 +503,9 @@ namespace PictureInPicture.ViewModels
           x => x.DataContext == this
       );
       if (thisWindow != null)
+      {
         _targetHandle = new WindowInteropHelper(thisWindow).Handle;
+      }
       InitDwmThumbnail();
     }
 
@@ -530,9 +532,19 @@ namespace PictureInPicture.ViewModels
     /// </summary>
     private void ChangeSelectedWindowCommandExecute()
     {
-      var mainWindow = new MainWindow();
-      mainWindow.Show();
+      // var mainWindow = new MainWindow();
+      // mainWindow.Show();
       CloseCommandExecute();
+
+      // TODO: This is a poor way to focus back to the MainViewModel.
+      // It assumes there is only one window left after closing this one, which
+      // should always be true, however, if we were to introduce multiple
+      // picture in picture windows this has the potential to break.
+      var windowsList = Application.Current.Windows.Cast<Window>();
+      if (windowsList.Any())
+      {
+        windowsList.First().Focus();
+      }
     }
 
     /// <summary>
@@ -548,9 +560,9 @@ namespace PictureInPicture.ViewModels
       _renderSizeEventDisabled = true;
       TopBarVisibility = Visibility.Visible;
       _heightOffset = (int)(TopBarHeight * _dpiY);
-      Top = Top - TopBarHeight;
-      Height = Height + TopBarHeight;
-      MinHeight = MinHeight + TopBarHeight;
+      Top -= TopBarHeight;
+      Height += TopBarHeight;
+      MinHeight += TopBarHeight;
       _renderSizeEventDisabled = false;
       e.Handled = true;
     }
@@ -573,13 +585,15 @@ namespace PictureInPicture.ViewModels
       var pa = new Point(Convert.ToInt32(p.X), Convert.ToInt32(p.Y));
 
       if (!TopBarIsVisible || r.Contains(pa))
+      {
         return;
+      }
       TopBarVisibility = Visibility.Hidden;
       _renderSizeEventDisabled = true;
       _heightOffset = 0;
-      Top = Top + TopBarHeight;
-      MinHeight = MinHeight - TopBarHeight;
-      Height = Height - TopBarHeight;
+      Top += TopBarHeight;
+      MinHeight -= TopBarHeight;
+      Height -= TopBarHeight;
       _renderSizeEventDisabled = false;
       e.Handled = true;
     }

@@ -11,6 +11,7 @@ using PictureInPicture.DataModel;
 using PictureInPicture.Interfaces;
 using PictureInPicture.Native;
 using PictureInPicture.Shared;
+using PictureInPicture.Views;
 
 namespace PictureInPicture.ViewModels
 {
@@ -35,6 +36,7 @@ namespace PictureInPicture.ViewModels
 
     public ICommand ClosingCommand { get; }
     public ICommand CloseCommand { get; }
+    public ICommand StartCommand { get; }
 
 
     /// <summary>
@@ -47,8 +49,8 @@ namespace PictureInPicture.ViewModels
     public bool RegionHasBeenModified =>
         Top != DefaultPosition
         || Left != DefaultPosition
-        || Height != Constants.MinCropperSize
-        || Width != Constants.MinCropperSize;
+        || Height != Constants.MinCropperHeight
+        || Width != Constants.MinCropperWidth;
 
     /// <summary>
     /// Gets or sets top property of the window
@@ -283,6 +285,7 @@ namespace PictureInPicture.ViewModels
 
       ClosingCommand = new RelayCommand(ClosingCommandExecute);
       CloseCommand = new RelayCommand(CloseCommandExecute);
+      StartCommand = new RelayCommand(StartCommandExecute);
       MessengerInstance.Register<WindowInfo>(this, Init);
       MessengerInstance.Register<Action<NativeStructs.Rect>>(
           this,
@@ -326,8 +329,8 @@ namespace PictureInPicture.ViewModels
 
       MaxHeight = _sizeRestriction.Height;
       MaxWidth = _sizeRestriction.Width;
-      MinHeight = Constants.MinCropperSize;
-      MinWidth = Constants.MinCropperSize;
+      MinHeight = Constants.MinCropperHeight;
+      MinWidth = Constants.MinCropperWidth;
 
       Top = 0;
       Left = 0;
@@ -397,8 +400,9 @@ namespace PictureInPicture.ViewModels
     public void SetAsForegroundWindow()
     {
       var thisWindow = ThisWindow();
-      if (thisWindow == null)
+      if (thisWindow == null) {
         return;
+      }
       thisWindow.Show();
       thisWindow.Activate();
       thisWindow.Topmost = true;
@@ -445,6 +449,19 @@ namespace PictureInPicture.ViewModels
       _mlSource?.Cancel();
       MessengerInstance.Unregister<WindowInfo>(this);
       MessengerInstance.Unregister<Action<NativeStructs.Rect>>(this);
+    }
+
+    /// <summary>
+    /// Executed on click on check button. Start up PiP
+    /// </summary>
+    private void StartCommandExecute()
+    {
+      var pip = new PiPModeWindow();
+      MessengerInstance.Send(
+          new SelectedWindow(_windowInfo, SelectedRegion)
+      );
+      pip.Show();
+      RequestClose?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>
