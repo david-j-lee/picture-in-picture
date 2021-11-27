@@ -24,9 +24,9 @@ namespace PictureInPicture.ViewModels
     public ICommand QuitCommand { get; }
     public ICommand ClosingCommand { get; }
 
-    public bool HasSelectedWindowInfo
+    public bool HasSelectedWindow
     {
-      get => SelectedWindowInfo != null;
+      get => SelectedWindow != null;
     }
 
     /// <summary>
@@ -47,7 +47,20 @@ namespace PictureInPicture.ViewModels
           ShowCropper();
         }
         RaisePropertyChanged();
-        RaisePropertyChanged(nameof(HasSelectedWindowInfo));
+      }
+    }
+    public SelectedWindow SelectedWindow
+    {
+      get => _selectedWindow;
+      set
+      {
+        if (_selectedWindow == value)
+        {
+          return;
+        }
+        _selectedWindow = value;
+        RaisePropertyChanged();
+        RaisePropertyChanged(nameof(HasSelectedWindow));
       }
     }
     /// <summary>
@@ -70,6 +83,7 @@ namespace PictureInPicture.ViewModels
     private ObservableCollection<WindowInfo> _windowsList;
     private CropperWindow _cropperWindow;
     private WindowInfo _selectedWindowInfo;
+    private SelectedWindow _selectedWindow;
 
     #endregion
 
@@ -87,7 +101,7 @@ namespace PictureInPicture.ViewModels
 
       WindowsList = new ObservableCollection<WindowInfo>();
 
-      MessengerInstance.Register<WindowInfo>(this, SaveWindowInfo);
+      MessengerInstance.Register<SelectedWindow>(this, SaveSelectedWindow);
 
       ProcessesService.Instance.OpenWindowsChanged += OpenWindowsChanged;
       // TODO: Make this opt in with toggle in main window before window selection
@@ -132,9 +146,10 @@ namespace PictureInPicture.ViewModels
       _cropperWindow.Show();
     }
 
-    private void SaveWindowInfo(WindowInfo windowInfo)
+    private void SaveSelectedWindow(SelectedWindow selectedWindow)
     {
-      SelectedWindowInfo = windowInfo;
+      SelectedWindowInfo = selectedWindow?.WindowInfo;
+      SelectedWindow = selectedWindow;
     }
 
     /// <summary>
@@ -205,7 +220,7 @@ namespace PictureInPicture.ViewModels
       }
       else
       {
-        StartPip(SelectedWindowInfo.Rect);
+        StartPip(SelectedWindow.SelectedRegion);
       }
     }
 

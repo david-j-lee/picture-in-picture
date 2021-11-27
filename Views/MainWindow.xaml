@@ -80,7 +80,7 @@
       </Button>
 
       <StackPanel Name="SelectWindowActionButtons"
-        Visibility="{Binding HasSelectedWindowInfo, Converter={StaticResource BooleanToVisibilityConverter}}"
+        Visibility="{Binding HasSelectedWindow, Converter={StaticResource BooleanToVisibilityConverter}}"
         Orientation="Horizontal">
 
         <TextBlock Foreground="{StaticResource TextColorDim}"
