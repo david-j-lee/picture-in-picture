@@ -17,7 +17,9 @@
   Width="{Binding Width, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
   Top="{Binding Top, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
   Left="{Binding Left, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+  Background="#01000000"
   WindowStyle="None"
+  IsHitTestVisible="true"
   x:Name="Window"
   Topmost="True"
   WindowStartupLocation="Manual">
@@ -48,36 +50,27 @@
     </i:EventTrigger>
   </i:Interaction.Triggers>
 
-  <Window.Background>
-    <StaticResource ResourceKey="Background" />
-  </Window.Background>
-
   <Grid VerticalAlignment="Stretch"
     HorizontalAlignment="Stretch">
     <Grid x:Name="TopBar"
       Visibility="{Binding TopBarVisibility, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
-      <Button ToolTip="{StaticResource Quit}"
-        Command="{Binding CloseCommand}"
-        VerticalAlignment="Top"
+      <Button Command="{Binding ChangeSelectedWindowCommand}"
+        VerticalAlignment="Center"
+        HorizontalAlignment="Center"
         Height="30"
-        Width="30">
-        <fa5:SvgAwesome Icon="Solid_Lock"
-          Width="10"
-          Foreground="White"
-          VerticalAlignment="Center"
-          HorizontalAlignment="Center" />
-      </Button>
-      <Button ToolTip="{StaticResource SelectNewWindow}"
-        Command="{Binding ChangeSelectedWindowCommand}"
-        VerticalAlignment="Top"
-        Height="30"
-        Width="30"
         Foreground="White">
-        <fa5:SvgAwesome Icon="Solid_Times"
-          Width="10"
-          Foreground="White"
-          VerticalAlignment="Center"
-          HorizontalAlignment="Center" />
+        <StackPanel Orientation="Horizontal">
+          <fa5:SvgAwesome Icon="Solid_Times"
+            Width="10"
+            Foreground="White"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            Margin="10, 0" />
+          <TextBlock Text="{StaticResource ClosePiP}"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            Margin="0, 0, 10, 0"/>
+        </StackPanel>
       </Button>
     </Grid>
   </Grid>

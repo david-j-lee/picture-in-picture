@@ -40,7 +40,6 @@ namespace PictureInPicture.ViewModels
     public const int MinSize = 100;
     public const float DefaultSizePercentage = 0.25f;
     public const float DefaultPositionPercentage = 0.1f;
-    public const int TopBarHeight = 30;
 
     public event EventHandler<EventArgs> RequestClose;
 
@@ -160,8 +159,8 @@ namespace PictureInPicture.ViewModels
 
     private float _dpiX = 1;
     private float _dpiY = 1;
-    private int _heightOffset;
     private Visibility _topBarVisibility;
+    private byte _opacity = 255;
     private bool _renderSizeEventDisabled;
     private int _minHeight;
     private int _minWidth;
@@ -241,7 +240,6 @@ namespace PictureInPicture.ViewModels
       _selectedWindow = selectedWindow;
       _renderSizeEventDisabled = true;
       TopBarVisibility = Visibility.Hidden;
-      _heightOffset = 0;
       Ratio = _selectedWindow.Ratio;
 
       DpiChangedCommandExecute();
@@ -305,11 +303,13 @@ namespace PictureInPicture.ViewModels
     private void UpdateDwmThumbnail()
     {
       if (_thumbHandle == IntPtr.Zero)
+      {
         return;
+      }
 
       var dest = new NativeStructs.Rect(
           0,
-          _heightOffset,
+          0,
           (int)(_width * _dpiX),
           (int)(_height * _dpiY)
       );
@@ -323,7 +323,7 @@ namespace PictureInPicture.ViewModels
               | DWM_TNP.DWM_TNP_OPACITY
               | DWM_TNP.DWM_TNP_RECTSOURCE
           ),
-        opacity = 255, // TODO: change this prop when navigated to
+        opacity = _opacity,
         rcDestination = dest,
         rcSource = _selectedWindow.SelectedRegion
       };
@@ -462,13 +462,7 @@ namespace PictureInPicture.ViewModels
         return IntPtr.Zero;
       }
 
-      var topBarHeight = 0;
-      if (TopBarIsVisible)
-      {
-        topBarHeight = TopBarHeight;
-      }
-
-      position.cx = (int)((position.cy - topBarHeight) * Ratio);
+      position.cx = (int)(position.cy * Ratio);
 
       Marshal.StructureToPtr(position, lParam, true);
       handeled = true;
@@ -558,11 +552,9 @@ namespace PictureInPicture.ViewModels
         return;
       }
       _renderSizeEventDisabled = true;
+      // TODO: only set opacity on video, this is also effecting the button
+      _opacity = Constants.PiPOpacityOnHover;
       TopBarVisibility = Visibility.Visible;
-      _heightOffset = (int)(TopBarHeight * _dpiY);
-      Top -= TopBarHeight;
-      Height += TopBarHeight;
-      MinHeight += TopBarHeight;
       _renderSizeEventDisabled = false;
       e.Handled = true;
     }
@@ -590,10 +582,7 @@ namespace PictureInPicture.ViewModels
       }
       TopBarVisibility = Visibility.Hidden;
       _renderSizeEventDisabled = true;
-      _heightOffset = 0;
-      Top += TopBarHeight;
-      MinHeight -= TopBarHeight;
-      Height -= TopBarHeight;
+      _opacity = 255;
       _renderSizeEventDisabled = false;
       e.Handled = true;
     }
