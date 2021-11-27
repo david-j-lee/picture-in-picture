@@ -7,3 +7,5 @@
 - Toggle transparency on hover effects, separate from locking
 
 - Convert from Galasoft to MVVM Toolkit
+
+- Add an icon
