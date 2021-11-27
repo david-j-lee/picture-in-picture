@@ -1,8 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <SolidColorBrush x:Key="Background"
-    Color="#241f1a"
-    Opacity="0.95" />
+    Color="#241f1a" />
+  <SolidColorBrush x:Key="BackgroundSecondary"
+    Color="#2a2723" />
   <SolidColorBrush x:Key="ButtonDefault"
     Color="#312c27" />
   <SolidColorBrush x:Key="ButtonHover"
@@ -13,5 +14,5 @@
     Color="#413f3c" />
   <SolidColorBrush x:Key="TextColor"
     Color="White" />
-  <!-- bottom background > #2a2723    -->
+  <!-- bottom background > #    -->
 </ResourceDictionary>

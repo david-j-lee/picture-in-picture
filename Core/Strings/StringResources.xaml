@@ -1,8 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <system:String x:Key="Welcome">Click the "Select a window" button to get started</system:String>
     <system:String x:Key="SelectWindow">Select a window</system:String>
-    <system:String x:Key="EnterPiPMode">Enter in PiP mode</system:String>
+    <system:String x:Key="SetupFocusedWindow">Setup next focused window</system:String>
+    <system:String x:Key="EnterPiPMode">Toggle picture in picture</system:String>
+    <system:String x:Key="LockPiPControls">Lock picture in picture</system:String>
+    <system:String x:Key="SetupPiP">Setup picture in picture</system:String>
     <system:String x:Key="Quit">Quit</system:String>
     <system:String x:Key="SelectNewWindow">Select a new window</system:String>
 </ResourceDictionary>

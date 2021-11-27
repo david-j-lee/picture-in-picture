@@ -42,6 +42,14 @@
 
   <Canvas x:Name="LayoutRoot"
     Margin="{Binding CanvasMargin, UpdateSourceTrigger=PropertyChanged}">
+
+    <Grid HorizontalAlignment="Center">
+      <StackPanel Orientation="Horizontal">
+        <Button>Edit Borders</Button>
+        <Button>Close</Button>
+      </StackPanel>
+    </Grid>
+
     <Rectangle x:Name="HideTop"
       Canvas.Top="0"
       Canvas.Left="0"

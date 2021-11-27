@@ -32,7 +32,8 @@ namespace PictureInPicture.ViewModels
       get => _selectedWindowInfo;
       set
       {
-        if (_selectedWindowInfo == value) {
+        if (_selectedWindowInfo == value)
+        {
           return;
         }
         _selectedWindowInfo = value;
@@ -78,8 +79,9 @@ namespace PictureInPicture.ViewModels
       WindowsList = new ObservableCollection<WindowInfo>();
 
       ProcessesService.Instance.OpenWindowsChanged += OpenWindowsChanged;
-      ProcessesService.Instance.ForegroundWindowChanged +=
-          ForegroundWindowChanged;
+      // TODO: Make this opt in with toggle in main window before window selection
+      // ProcessesService.Instance.ForegroundWindowChanged +=
+      //     ForegroundWindowChanged;
       UpdateWindowsList();
     }
 
@@ -104,6 +106,8 @@ namespace PictureInPicture.ViewModels
       {
         WindowsList.Remove(toRemove[index]);
       }
+      // TODO: Convert WindowsList to a CollectionViewSource, see https://stackoverflow.com/a/19113072/6535663
+      WindowsList = new ObservableCollection<WindowInfo>(WindowsList.OrderBy(i => i.Title));
     }
 
     /// <summary>
@@ -192,8 +196,9 @@ namespace PictureInPicture.ViewModels
     {
       Logger.Instance.Info("   |||||| Close MainWindow ||||||   ");
       ProcessesService.Instance.OpenWindowsChanged -= OpenWindowsChanged;
-      ProcessesService.Instance.ForegroundWindowChanged -=
-          ForegroundWindowChanged;
+      // TODO: Uncomment once opt-in support is available
+      // ProcessesService.Instance.ForegroundWindowChanged -=
+      //     ForegroundWindowChanged;
       ProcessesService.Instance.Dispose();
       _cropperWindow?.Close();
     }

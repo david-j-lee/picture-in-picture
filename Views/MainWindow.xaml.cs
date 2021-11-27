@@ -35,7 +35,9 @@ namespace PictureInPicture.Views
     protected override void OnMouseMove(MouseEventArgs e)
     {
       if (!_dragging)
+      {
         return;
+      }
       Left = Left + e.GetPosition(this).X - _anchorPoint.X;
       Top = Top + e.GetPosition(this).Y - _anchorPoint.Y;
     }
