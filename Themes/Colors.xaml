@@ -14,5 +14,7 @@
     Color="#413f3c" />
   <SolidColorBrush x:Key="TextColor"
     Color="White" />
+  <SolidColorBrush x:Key="TextColorDim"
+    Color="#777777" />
   <!-- bottom background > #    -->
 </ResourceDictionary>

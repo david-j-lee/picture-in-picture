@@ -20,7 +20,14 @@
           <Border Background="{TemplateBinding Background}"
             CornerRadius="4">
             <ContentPresenter HorizontalAlignment="Center"
-              VerticalAlignment="Center"/>
+              VerticalAlignment="Center">
+              <ContentPresenter.Resources>
+                <Style TargetType="TextBlock">
+                  <Setter Property="Padding"
+                    Value="10, 5"></Setter>
+                </Style>
+              </ContentPresenter.Resources>
+            </ContentPresenter>
           </Border>
         </ControlTemplate>
       </Setter.Value>

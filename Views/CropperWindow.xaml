@@ -3,6 +3,7 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:fa5="http://schemas.fontawesome.com/icons/"
   xmlns:system="clr-namespace:System;assembly=mscorlib"
   xmlns:viewModels="clr-namespace:PictureInPicture.ViewModels"
   xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
@@ -43,14 +44,59 @@
   <Canvas x:Name="LayoutRoot"
     Margin="{Binding CanvasMargin, UpdateSourceTrigger=PropertyChanged}">
 
-    <Grid HorizontalAlignment="Center">
-      <StackPanel Orientation="Horizontal">
-        <Button>Edit Borders</Button>
-        <Button>Close</Button>
-      </StackPanel>
+    <Grid Canvas.ZIndex="2"
+      HorizontalAlignment="Center"
+      Margin="10"
+      Width="{Binding MaxWidth, UpdateSourceTrigger=PropertyChanged}">
+      <Border CornerRadius="4"
+        Background="{StaticResource Background}"
+        Margin="0, 3"
+        HorizontalAlignment="Center">
+        <StackPanel Orientation="Horizontal"
+          HorizontalAlignment="Center">
+          <Button ToolTip="{StaticResource SetupFocusedWindow}"
+            Command="{Binding }"
+            Margin="5, 5, 1, 5"
+            Height="30"
+            Width="30">
+            <fa5:SvgAwesome Icon="Solid_Check"
+              Width="12"
+              Foreground="White"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Center" />
+          </Button>
+          <!-- TODO: Add support for clicking to do initial setup. then this would toggle between the two modes -->
+          <!-- <Button ToolTip="{StaticResource SetupFocusedWindow}"
+            Margin="1, 5, 1, 5"
+            Height="30"
+            Width="30">
+            <fa5:SvgAwesome Icon="Solid_VectorSquare"
+              Width="12"
+              Foreground="White"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Center" />
+          </Button> -->
+          <TextBlock Foreground="{StaticResource TextColorDim}"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            Margin="5, 0">|</TextBlock>
+          <Button ToolTip="{StaticResource SetupFocusedWindow}"
+            Command="{Binding CloseCommand}"
+            Margin="1, 5, 5, 5"
+            Height="30"
+            Width="30">
+            <fa5:SvgAwesome Icon="Solid_Times"
+              Width="12"
+              Foreground="White"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Center" />
+          </Button>
+        </StackPanel>
+      </Border>
     </Grid>
 
     <Rectangle x:Name="HideTop"
+      Canvas.ZIndex="1"
       Canvas.Top="0"
       Canvas.Left="0"
       Opacity="{StaticResource Opacity}"

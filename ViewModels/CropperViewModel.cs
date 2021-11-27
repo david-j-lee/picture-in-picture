@@ -31,8 +31,11 @@ namespace PictureInPicture.ViewModels
       }
     }
 
-    public ICommand ClosingCommand { get; }
     public event EventHandler<EventArgs> RequestClose;
+
+    public ICommand ClosingCommand { get; }
+    public ICommand CloseCommand { get; }
+
 
     /// <summary>
     /// Gets selected region
@@ -279,6 +282,7 @@ namespace PictureInPicture.ViewModels
       Logger.Instance.Info("   ====== CropperWindow ======   ");
 
       ClosingCommand = new RelayCommand(ClosingCommandExecute);
+      CloseCommand = new RelayCommand(CloseCommandExecute);
       MessengerInstance.Register<WindowInfo>(this, Init);
       MessengerInstance.Register<Action<NativeStructs.Rect>>(
           this,
@@ -441,6 +445,15 @@ namespace PictureInPicture.ViewModels
       _mlSource?.Cancel();
       MessengerInstance.Unregister<WindowInfo>(this);
       MessengerInstance.Unregister<Action<NativeStructs.Rect>>(this);
+    }
+
+    /// <summary>
+    /// Executed on click on close button. Close this window
+    /// </summary>
+    private void CloseCommandExecute()
+    {
+      MessengerInstance.Unregister<SelectedWindow>(this);
+      RequestClose?.Invoke(this, EventArgs.Empty);
     }
     #endregion
 

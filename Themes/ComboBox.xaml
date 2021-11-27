@@ -245,7 +245,14 @@
             SnapsToDevicePixels="true">
             <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+              VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+              <ContentPresenter.Resources>
+                <Style TargetType="TextBlock">
+                  <Setter Property="TextTrimming"
+                    Value="CharacterEllipsis"></Setter>
+                </Style>
+              </ContentPresenter.Resources>
+            </ContentPresenter>
           </Border>
           <ControlTemplate.Triggers>
             <Trigger Property="IsEnabled"

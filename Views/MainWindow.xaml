@@ -62,8 +62,6 @@
 
       <Button x:Name="ButtonTargetWindow"
         ToolTip="{StaticResource SetupFocusedWindow}"
-        HorizontalAlignment="Left"
-        VerticalAlignment="Top"
         Margin="15, 15, 0, 15"
         Width="40"
         Height="35"
@@ -79,8 +77,6 @@
 
       <Button x:Name="ButtonPip"
         ToolTip="{StaticResource EnterPiPMode}"
-        HorizontalAlignment="Left"
-        VerticalAlignment="Top"
         Margin="15, 15, 0, 15"
         Width="40"
         Height="35"
@@ -94,8 +90,6 @@
 
       <Button x:Name="ButtonLock"
         ToolTip="{StaticResource LockPiPControls}"
-        HorizontalAlignment="Left"
-        VerticalAlignment="Top"
         Margin="15, 15, 0, 15"
         Width="40"
         Height="35"
@@ -109,8 +103,6 @@
 
       <Button x:Name="ButtonSetup"
         ToolTip="{StaticResource SetupPiP}"
-        HorizontalAlignment="Left"
-        VerticalAlignment="Top"
         Margin="15, 15, 0, 15"
         Width="40"
         Height="35"

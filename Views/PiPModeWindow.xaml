@@ -3,6 +3,7 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:fa5="http://schemas.fontawesome.com/icons/"
   xmlns:viewModels="clr-namespace:PictureInPicture.ViewModels"
   xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
   xmlns:command="http://www.galasoft.ch/mvvmlight"
@@ -56,29 +57,27 @@
     <Grid x:Name="TopBar"
       Visibility="{Binding TopBarVisibility, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
       HorizontalAlignment="Right">
-      <Button HorizontalAlignment="Left"
-        ToolTip="{StaticResource Quit}"
-        VerticalAlignment="Top"
+      <!-- <Button ToolTip="{StaticResource Quit}"
         Command="{Binding CloseCommand}"
         Height="30"
-        Width="30"
-        BorderBrush="#e81123"
-        Opacity="0.5"
-        FontFamily="/PictureInPicture;component/Assets/#Flaticon"
-        Content=""
-        Foreground="White" />
-      <Button HorizontalAlignment="Left"
-        ToolTip="{StaticResource SelectNewWindow}"
-        VerticalAlignment="Top"
+        Width="30">
+        <fa5:SvgAwesome Icon="Solid_Lock"
+          Width="10"
+          Foreground="White"
+          VerticalAlignment="Center"
+          HorizontalAlignment="Center" />
+      </Button> -->
+      <Button ToolTip="{StaticResource SelectNewWindow}"
         Command="{Binding ChangeSelectedWindowCommand}"
         Height="30"
         Width="30"
-        BorderBrush="#FF7C7C7C"
-        Opacity="0.5"
-        Margin="-30,0,0,0"
-        FontFamily="/PictureInPicture;component/Assets/#Flaticon"
-        Content=""
-        Foreground="White" />
+        Foreground="White">
+        <fa5:SvgAwesome Icon="Solid_Lock"
+          Width="10"
+          Foreground="White"
+          VerticalAlignment="Center"
+          HorizontalAlignment="Center" />
+      </Button>
     </Grid>
   </Grid>
 
