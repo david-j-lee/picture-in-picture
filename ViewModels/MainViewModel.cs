@@ -20,7 +20,9 @@ namespace PictureInPicture.ViewModels
 
     public event EventHandler<EventArgs> RequestClose;
 
-    public ICommand StartPipCommand { get; }
+    public ICommand TogglePipCommand { get; }
+    public ICommand LockPipCommand { get; }
+    public ICommand SetupPipCommand { get; }
     public ICommand QuitCommand { get; }
     public ICommand ClosingCommand { get; }
 
@@ -76,6 +78,31 @@ namespace PictureInPicture.ViewModels
       }
     }
 
+    public bool EnableTargetNextFocusedWindow
+    {
+      get => _enableTargetNextFocusedWindow;
+      set
+      {
+        _enableTargetNextFocusedWindow = value;
+        RaisePropertyChanged();
+      }
+    }
+
+    public bool LockPipControls
+    {
+      get => _lockPipControls;
+      set
+      {
+        _lockPipControls = value;
+        if (SelectedWindow != null)
+        {
+          SelectedWindow.DisableControls = _lockPipControls;
+          MessengerInstance.Send(SelectedWindow);
+        }
+        RaisePropertyChanged();
+      }
+    }
+
     #endregion
 
     #region private
@@ -84,6 +111,9 @@ namespace PictureInPicture.ViewModels
     private CropperWindow _cropperWindow;
     private WindowInfo _selectedWindowInfo;
     private SelectedWindow _selectedWindow;
+    private PiPModeWindow _pipModeWindow;
+    private bool _enableTargetNextFocusedWindow = false;
+    private bool _lockPipControls = false;
 
     #endregion
 
@@ -95,18 +125,20 @@ namespace PictureInPicture.ViewModels
     {
       Logger.Instance.Info("   ====== MainWindow ======   ");
 
-      StartPipCommand = new RelayCommand(StartPipCommandExecute);
+      TogglePipCommand = new RelayCommand(TogglePipCommandExecute);
+      LockPipCommand = new RelayCommand(LockPipCommandExecute);
+      SetupPipCommand = new RelayCommand(SetupPipCommandExecute);
       QuitCommand = new RelayCommand(QuitCommandExecute);
       ClosingCommand = new RelayCommand(ClosingCommandExecute);
 
       WindowsList = new ObservableCollection<WindowInfo>();
 
-      MessengerInstance.Register<SelectedWindow>(this, SaveSelectedWindow);
+      MessengerInstance.Register<PiPModeWindow>(this, HandlePipModeWindowChange);
+      MessengerInstance.Register<SelectedWindow>(this, HandleSelectedWindowChange);
 
       ProcessesService.Instance.OpenWindowsChanged += OpenWindowsChanged;
-      // TODO: Make this opt in with toggle in main window before window selection
-      // ProcessesService.Instance.ForegroundWindowChanged +=
-      //     ForegroundWindowChanged;
+      ProcessesService.Instance.ForegroundWindowChanged +=
+          ForegroundWindowChanged;
       UpdateWindowsList();
     }
 
@@ -146,7 +178,12 @@ namespace PictureInPicture.ViewModels
       _cropperWindow.Show();
     }
 
-    private void SaveSelectedWindow(SelectedWindow selectedWindow)
+    private void HandlePipModeWindowChange(PiPModeWindow pipModeWindow)
+    {
+      _pipModeWindow = pipModeWindow;
+    }
+
+    private void HandleSelectedWindowChange(SelectedWindow selectedWindow)
     {
       SelectedWindowInfo = selectedWindow?.WindowInfo;
       SelectedWindow = selectedWindow;
@@ -158,11 +195,11 @@ namespace PictureInPicture.ViewModels
     /// <param name="selectedRegion"></param>
     private void StartPip(NativeStructs.Rect selectedRegion)
     {
-      var pip = new PiPModeWindow();
+      _pipModeWindow = new PiPModeWindow();
       MessengerInstance.Send(
           new SelectedWindow(SelectedWindowInfo, selectedRegion)
       );
-      pip.Show();
+      _pipModeWindow.Show();
     }
 
     /// <summary>
@@ -176,9 +213,12 @@ namespace PictureInPicture.ViewModels
       var foregroundWindow = ProcessesService.Instance.ForegroundWindow;
       if (foregroundWindow != null)
       {
-        SelectedWindowInfo = foregroundWindow;
+        if (EnableTargetNextFocusedWindow)
+        {
+          SelectedWindowInfo = foregroundWindow;
+        }
         Logger.Instance.Info(
-            "Foreground window updated : " + SelectedWindowInfo.Title
+            "Foreground window updated : " + SelectedWindowInfo?.Title
         );
       }
       else
@@ -212,15 +252,59 @@ namespace PictureInPicture.ViewModels
     /// <summary>
     /// Executed on click on change selected window button. Send message with <see cref="StartPip"/> callback
     /// </summary>
-    private void StartPipCommandExecute()
+    private void TogglePipCommandExecute()
     {
       if (SelectedWindowInfo == null)
       {
         MessengerInstance.Send<Action<NativeStructs.Rect>>(StartPip);
       }
-      else
+      else if (SelectedWindow != null
+        && SelectedWindow.PictureInPictureEnabled
+        && _pipModeWindow != null)
+      {
+        _pipModeWindow.Close();
+        SelectedWindow.PictureInPictureEnabled = false;
+
+        // TODO: This is a poor way to focus back to the MainViewModel.
+        // It assumes there is only one window left after closing this one, which
+        // should always be true, however, if we were to introduce multiple
+        // picture in picture windows this has the potential to break.
+        var windowsList = Application.Current.Windows.Cast<Window>();
+        if (windowsList.Any())
+        {
+          windowsList.First().Focus();
+        }
+      }
+      else if (SelectedWindow != null)
       {
         StartPip(SelectedWindow.SelectedRegion);
+        SelectedWindow.PictureInPictureEnabled = true;
+      }
+    }
+
+    private void LockPipCommandExecute()
+    {
+      if (SelectedWindow != null)
+      {
+        SelectedWindow.DisableControls = true;
+        MessengerInstance.Send(SelectedWindow);
+      }
+    }
+
+    private void SetupPipCommandExecute()
+    {
+      if (_pipModeWindow != null)
+      {
+        _pipModeWindow.Close();
+      }
+
+      if (_cropperWindow != null)
+      {
+        _cropperWindow?.Close();
+        _cropperWindow = new CropperWindow();
+        MessengerInstance.Send(SelectedWindowInfo);
+         MessengerInstance.Send(SelectedWindow);
+        _cropperWindow.Show();
       }
     }
 
@@ -240,11 +324,11 @@ namespace PictureInPicture.ViewModels
     {
       Logger.Instance.Info("   |||||| Close MainWindow ||||||   ");
 
+      MessengerInstance.Unregister<PiPModeWindow>(this);
       MessengerInstance.Unregister<SelectedWindow>(this);
       ProcessesService.Instance.OpenWindowsChanged -= OpenWindowsChanged;
-      // TODO: Uncomment once opt-in support is available
-      // ProcessesService.Instance.ForegroundWindowChanged -=
-      //     ForegroundWindowChanged;
+      ProcessesService.Instance.ForegroundWindowChanged -=
+          ForegroundWindowChanged;
       ProcessesService.Instance.Dispose();
 
       CloseAllWindows();

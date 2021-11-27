@@ -9,7 +9,7 @@
   xmlns:command="http://www.galasoft.ch/mvvmlight"
   mc:Ignorable="d"
   Title="{Binding Title, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-  ResizeMode="CanResizeWithGrip"
+  ResizeMode="{Binding ResizeMode}"
   AllowsTransparency="True"
   MinHeight="{Binding MinHeight, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
   MinWidth="{Binding MinWidth, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
@@ -31,10 +31,6 @@
   <i:Interaction.Triggers>
     <i:EventTrigger EventName="Loaded">
       <command:EventToCommand Command="{Binding LoadedCommand}"
-        PassEventArgsToCommand="True" />
-    </i:EventTrigger>
-    <i:EventTrigger EventName="SizeChanged">
-      <command:EventToCommand Command="{Binding SizeChangedCommand}"
         PassEventArgsToCommand="True" />
     </i:EventTrigger>
     <i:EventTrigger EventName="MouseEnter">

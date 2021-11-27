@@ -8,6 +8,8 @@
     Color="#312c27" />
   <SolidColorBrush x:Key="ButtonHover"
     Color="#36312d" />
+  <SolidColorBrush x:Key="ToggleButtonChecked"
+    Color="#296b3a" />
   <SolidColorBrush x:Key="ComboBoxItemBackground"
     Color="#2f2f2f" />  
   <SolidColorBrush x:Key="ComboBoxItemBackgroundHover"
@@ -16,5 +18,4 @@
     Color="White" />
   <SolidColorBrush x:Key="TextColorDim"
     Color="#777777" />
-  <!-- bottom background > #    -->
 </ResourceDictionary>

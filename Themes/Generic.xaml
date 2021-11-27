@@ -9,6 +9,7 @@
     <ResourceDictionary Source="/Themes/ComboBox.xaml"/>
     <ResourceDictionary Source="/Themes/Button.xaml"/>
     <ResourceDictionary Source="/Themes/ToolTips.xaml"/>
+    <ResourceDictionary Source="/Themes/ToggleButton.xaml"/>
   </ResourceDictionary.MergedDictionaries>
 
   <Style x:Key="MoveResize"

@@ -19,19 +19,6 @@ namespace PictureInPicture.ViewModels
   {
     #region public
 
-    /// <summary>
-    /// Gets or sets window title
-    /// </summary>
-    public string Title
-    {
-      get => _title;
-      set
-      {
-        _title = value;
-        RaisePropertyChanged();
-      }
-    }
-
     public event EventHandler<EventArgs> RequestClose;
 
     public ICommand ClosingCommand { get; }
@@ -51,6 +38,19 @@ namespace PictureInPicture.ViewModels
         || Left != DefaultPosition
         || Height != Constants.MinCropperHeight
         || Width != Constants.MinCropperWidth;
+
+    /// <summary>
+    /// Gets or sets window title
+    /// </summary>
+    public string Title
+    {
+      get => _title;
+      set
+      {
+        _title = value;
+        RaisePropertyChanged();
+      }
+    }
 
     /// <summary>
     /// Gets or sets top property of the window
@@ -271,7 +271,6 @@ namespace PictureInPicture.ViewModels
     private WindowInfo _windowInfo;
 
     private CancellationTokenSource _mlSource;
-    private CancellationToken _mlToken;
 
     #endregion
 
@@ -286,7 +285,9 @@ namespace PictureInPicture.ViewModels
       ClosingCommand = new RelayCommand(ClosingCommandExecute);
       CloseCommand = new RelayCommand(CloseCommandExecute);
       StartCommand = new RelayCommand(StartCommandExecute);
+
       MessengerInstance.Register<WindowInfo>(this, Init);
+      MessengerInstance.Register<SelectedWindow>(this, HandleSelectedWindowChange);
       MessengerInstance.Register<Action<NativeStructs.Rect>>(
           this,
           StartPip
@@ -337,11 +338,12 @@ namespace PictureInPicture.ViewModels
       Height = MinHeight;
       Width = MinWidth;
 
+      ThisWindow().Focus();
       SetAsForegroundWindow();
 
       _mlSource = new CancellationTokenSource();
-      _mlToken = _mlSource.Token;
       // TODO: commented out code
+      // _mlToken = _mlSource.Token;
       // Task.Run(() =>
       // {
       //     MachineLearningService.Instance.PredictAsync(
@@ -382,6 +384,19 @@ namespace PictureInPicture.ViewModels
     //         Width = Constants.MinCropperSize;
     // }
 
+    private void HandleSelectedWindowChange(SelectedWindow selectedWindow)
+    {
+      if (selectedWindow != null)
+      {
+        MessengerInstance.Unregister<SelectedWindow>(this);
+
+        Top = selectedWindow.SelectedRegion.Top;
+        Left = selectedWindow.SelectedRegion.Left;
+        Height = selectedWindow.SelectedRegion.Height;
+        Width = selectedWindow.SelectedRegion.Width;
+      }
+    }
+
     /// <summary>
     /// Gets this window
     /// </summary>
@@ -400,7 +415,8 @@ namespace PictureInPicture.ViewModels
     public void SetAsForegroundWindow()
     {
       var thisWindow = ThisWindow();
-      if (thisWindow == null) {
+      if (thisWindow == null)
+      {
         return;
       }
       thisWindow.Show();
@@ -457,10 +473,13 @@ namespace PictureInPicture.ViewModels
     private void StartCommandExecute()
     {
       var pip = new PiPModeWindow();
-      MessengerInstance.Send(
-          new SelectedWindow(_windowInfo, SelectedRegion)
-      );
       pip.Show();
+      MessengerInstance.Send(pip);
+
+      var selectedWindow = new SelectedWindow(_windowInfo, SelectedRegion);
+      selectedWindow.PictureInPictureEnabled = true;
+      MessengerInstance.Send(selectedWindow);
+
       RequestClose?.Invoke(this, EventArgs.Empty);
     }
 

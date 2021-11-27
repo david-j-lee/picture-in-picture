@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using PictureInPicture.DataModel;
@@ -15,6 +16,7 @@ using PictureInPicture.Shared;
 using PictureInPicture.Shared.Helpers;
 using PictureInPicture.Views;
 using Application = System.Windows.Application;
+using Brush = System.Windows.Media.Brush;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using Point = System.Drawing.Point;
 
@@ -50,6 +52,32 @@ namespace PictureInPicture.ViewModels
     public ICommand MouseEnterCommand { get; }
     public ICommand MouseLeaveCommand { get; }
     public ICommand DpiChangedCommand { get; }
+
+    public bool Locked
+    {
+      get => _locked;
+      set
+      {
+        _locked = value;
+        RaisePropertyChanged();
+        RaisePropertyChanged("ResizeMode");
+      }
+    }
+
+    public SelectedWindow SelectedWindow
+    {
+      get => _selectedWindow;
+      set
+      {
+        _selectedWindow = value;
+        RaisePropertyChanged();
+      }
+    }
+
+    public string ResizeMode
+    {
+      get => Locked ? "NoResize" : "CanResizeWithGrip";
+    }
 
     /// <summary>
     /// Gets or sets min height property of the window
@@ -133,33 +161,37 @@ namespace PictureInPicture.ViewModels
     /// Gets or sets ratio of the pip region
     /// </summary>
     public float Ratio { get; private set; }
+
     /// <summary>
     /// Gets or sets visibility of the topbar
     /// </summary>
-    public Visibility ControlVisibility
+    public Visibility ControlsVisibility
     {
-      get => _topBarVisibility;
+      get => _controlsVisibility;
       set
       {
-        _topBarVisibility = value;
+        _controlsVisibility = value;
         UpdateDwmThumbnail();
         RaisePropertyChanged();
       }
     }
+
     /// <summary>
     /// Gets if topbar is visible
     /// </summary>
-    public bool ControlsAreVisible => ControlVisibility == Visibility.Visible;
+    public bool ControlsAreVisible => ControlsVisibility == Visibility.Visible
+        && !SelectedWindow.DisableControls;
 
     #endregion
 
     #region private
 
-    private string _title;
+    private bool _locked = false;
+    private string _title = "";
 
     private float _dpiX = 1;
     private float _dpiY = 1;
-    private Visibility _topBarVisibility;
+    private Visibility _controlsVisibility;
     private byte _opacity = 255;
     private bool _renderSizeEventDisabled;
     private int _minHeight;
@@ -168,9 +200,10 @@ namespace PictureInPicture.ViewModels
     private int _left;
     private int _height;
     private int _width;
-    private IntPtr _targetHandle,
-        _thumbHandle;
+    private IntPtr _targetHandle;
+    private IntPtr _thumbHandle;
     private SelectedWindow _selectedWindow;
+    private bool _initialized;
 
     private enum Position
     {
@@ -179,8 +212,6 @@ namespace PictureInPicture.ViewModels
       BottomLeft,
       BottomRight
     }
-
-    private readonly CancellationTokenSource _mlSource;
 
     #endregion
 
@@ -208,7 +239,7 @@ namespace PictureInPicture.ViewModels
 
       MessengerInstance.Register<SelectedWindow>(
           this,
-          InitSelectedWindow
+          HandleSelectedWindowChange
       );
 
       MinHeight = MinSize;
@@ -219,27 +250,46 @@ namespace PictureInPicture.ViewModels
     /// Set selected region' data. Set position and size of this window
     /// </summary>
     /// <param name="selectedWindow">Selected window to use in pip mode</param>
-    private void InitSelectedWindow(SelectedWindow selectedWindow)
+    private void HandleSelectedWindowChange(SelectedWindow selectedWindow)
     {
+      _selectedWindow = selectedWindow;
+
       if (selectedWindow == null || selectedWindow.WindowInfo == null)
       {
         Logger.Instance.Error("Can't init PiP mode");
         return;
       }
 
+      if (!_initialized)
+      {
+        Initialize(selectedWindow);
+      }
+
+      Locked = selectedWindow.DisableControls;
+      var window = ThisWindow();
+      if (window != null)
+      {
+        if (Locked)
+        {
+          ThisWindow().Background = new SolidColorBrush(Colors.Transparent);
+        }
+        else
+        {
+          var bc = new BrushConverter();
+          ThisWindow().Background = (Brush)bc.ConvertFrom("#01000000");
+        }
+      }
+    }
+
+    private void Initialize(SelectedWindow selectedWindow)
+    {
       Logger.Instance.Info(
           "Init PiP mode : " + selectedWindow.WindowInfo.Title
       );
+      Title = selectedWindow.WindowInfo.Title + " - PiP Mode - PictureInPicture";
 
-      MessengerInstance.Unregister<SelectedWindow>(this);
-
-      Title =
-          selectedWindow.WindowInfo.Title
-          + " - PiP Mode - PictureInPicture";
-
-      _selectedWindow = selectedWindow;
       _renderSizeEventDisabled = true;
-      ControlVisibility = Visibility.Hidden;
+      ControlsVisibility = Visibility.Hidden;
       Ratio = _selectedWindow.Ratio;
 
       DpiChangedCommandExecute();
@@ -264,6 +314,8 @@ namespace PictureInPicture.ViewModels
       SetPosition(Position.BottomLeft);
 
       InitDwmThumbnail();
+
+      _initialized = true;
     }
 
     /// <summary>
@@ -476,7 +528,6 @@ namespace PictureInPicture.ViewModels
     /// </summary>
     public void Dispose()
     {
-      _mlSource?.Cancel();
       (
           (HwndSource)PresentationSource.FromVisual(ThisWindow())
       )?.RemoveHook(DragHook);
@@ -508,6 +559,8 @@ namespace PictureInPicture.ViewModels
     /// </summary>
     private void CloseCommandExecute()
     {
+      _selectedWindow.PictureInPictureEnabled = false;
+      MessengerInstance.Send(_selectedWindow);
       MessengerInstance.Unregister<SelectedWindow>(this);
       RequestClose?.Invoke(this, EventArgs.Empty);
     }
@@ -526,8 +579,6 @@ namespace PictureInPicture.ViewModels
     /// </summary>
     private void ChangeSelectedWindowCommandExecute()
     {
-      // var mainWindow = new MainWindow();
-      // mainWindow.Show();
       CloseCommandExecute();
 
       // TODO: This is a poor way to focus back to the MainViewModel.
@@ -547,14 +598,15 @@ namespace PictureInPicture.ViewModels
     /// <param name="e">Event arguments</param>
     private void MouseEnterCommandExecute(MouseEventArgs e)
     {
-      if (ControlsAreVisible)
+      // TODO: only set opacity on video, this is also effecting the button
+      _opacity = Constants.PiPOpacityOnHover;
+
+      if (ControlsAreVisible || Locked)
       {
         return;
       }
       _renderSizeEventDisabled = true;
-      // TODO: only set opacity on video, this is also effecting the button
-      _opacity = Constants.PiPOpacityOnHover;
-      ControlVisibility = Visibility.Visible;
+      ControlsVisibility = Visibility.Visible;
       _renderSizeEventDisabled = false;
       e.Handled = true;
     }
@@ -576,13 +628,14 @@ namespace PictureInPicture.ViewModels
       );
       var pa = new Point(Convert.ToInt32(p.X), Convert.ToInt32(p.Y));
 
+      _opacity = 255;
+
       if (!ControlsAreVisible || r.Contains(pa))
       {
         return;
       }
-      ControlVisibility = Visibility.Hidden;
       _renderSizeEventDisabled = true;
-      _opacity = 255;
+      ControlsVisibility = Visibility.Hidden;
       _renderSizeEventDisabled = false;
       e.Handled = true;
     }

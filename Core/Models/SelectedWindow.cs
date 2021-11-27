@@ -10,6 +10,7 @@ namespace PictureInPicture.DataModel
     public WindowInfo WindowInfo { get; }
     public NativeStructs.Rect SelectedRegion { get; set; }
 
+    public bool PictureInPictureEnabled { get; set; }
     public bool DisableControls { get; set; }
 
     public NativeStructs.Rect SelectedRegionNoBorder =>

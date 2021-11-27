@@ -27,7 +27,9 @@
               <ContentPresenter.Resources>
                 <Style TargetType="TextBlock">
                   <Setter Property="FontSize"
-                    Value="12"></Setter>
+                    Value="12"/>
+                  <Setter Property="Foreground"
+                    Value="{StaticResource TextColor}"/>
                 </Style>
               </ContentPresenter.Resources>
             </ContentPresenter>

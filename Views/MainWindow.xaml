@@ -66,18 +66,35 @@
         </ComboBox.ItemContainerStyle>
       </ComboBox>
 
-      <Button x:Name="ButtonTargetWindow"
+      <ToggleButton x:Name="ButtonTargetWindow"
+        IsChecked="{Binding EnableTargetNextFocusedWindow, Mode=TwoWay}"
         ToolTip="{StaticResource SetupFocusedWindow}"
         Margin="10, 15, 0, 15"
         Width="40"
-        Height="35"
-        Command="{Binding StartPipCommand}">
+        Height="35">
         <fa5:SvgAwesome Icon="Solid_Bullseye"
           Width="10"
           Foreground="White"
           VerticalAlignment="Center"
           HorizontalAlignment="Center" />
-      </Button>
+        <ToggleButton.Style>
+          <Style TargetType="ToggleButton"
+            BasedOn="{StaticResource {x:Type ToggleButton}}">
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding HasSelectedWindow}"
+                Value="True">
+                <Setter Property="Visibility"
+                  Value="Collapsed" />
+              </DataTrigger>
+              <DataTrigger Binding="{Binding HasSelectedWindow}"
+                Value="False">
+                <Setter Property="Visibility"
+                  Value="Visible" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </ToggleButton.Style>
+      </ToggleButton>
 
       <StackPanel Name="SelectWindowActionButtons"
         Visibility="{Binding HasSelectedWindow, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -93,7 +110,7 @@
           Margin="0, 15, 10, 15"
           Width="40"
           Height="35"
-          Command="{Binding StartPipCommand}">
+          Command="{Binding TogglePipCommand}">
           <fa5:SvgAwesome Icon="Solid_Expand"
             Width="10"
             Foreground="White"
@@ -101,25 +118,25 @@
             HorizontalAlignment="Center" />
         </Button>
 
-        <Button x:Name="ButtonLock"
+        <ToggleButton x:Name="ButtonLock"
+          IsChecked="{Binding LockPipControls, Mode=TwoWay}"
           ToolTip="{StaticResource LockPiPControls}"
           Margin="0, 15, 10, 15"
           Width="40"
-          Height="35"
-          Command="{Binding StartPipCommand}">
+          Height="35">
           <fa5:SvgAwesome Icon="Solid_Lock"
             Width="10"
             Foreground="White"
             VerticalAlignment="Center"
             HorizontalAlignment="Center" />
-        </Button>
+        </ToggleButton>
 
         <Button x:Name="ButtonSetup"
           ToolTip="{StaticResource SetupPiP}"
           Margin="0, 15, 10, 15"
           Width="40"
           Height="35"
-          Command="{Binding StartPipCommand}">
+          Command="{Binding SetupPipCommand}">
           <fa5:SvgAwesome Icon="Solid_Cog"
             Width="10"
             Foreground="White"
