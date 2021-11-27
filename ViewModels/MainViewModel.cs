@@ -303,7 +303,7 @@ namespace PictureInPicture.ViewModels
         _cropperWindow?.Close();
         _cropperWindow = new CropperWindow();
         MessengerInstance.Send(SelectedWindowInfo);
-         MessengerInstance.Send(SelectedWindow);
+        MessengerInstance.Send(SelectedWindow);
         _cropperWindow.Show();
       }
     }

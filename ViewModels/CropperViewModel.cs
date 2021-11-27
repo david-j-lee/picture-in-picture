@@ -341,8 +341,8 @@ namespace PictureInPicture.ViewModels
       ThisWindow().Focus();
       SetAsForegroundWindow();
 
-      _mlSource = new CancellationTokenSource();
       // TODO: commented out code
+      // _mlSource = new CancellationTokenSource();
       // _mlToken = _mlSource.Token;
       // Task.Run(() =>
       // {
