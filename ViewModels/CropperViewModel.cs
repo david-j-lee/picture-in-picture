@@ -492,7 +492,9 @@ namespace PictureInPicture.ViewModels
     /// </summary>
     private void CloseCommandExecute()
     {
-      MessengerInstance.Send<SelectedWindow>(null);
+      if (_selectedWindow == null) {
+        MessengerInstance.Send<SelectedWindow>(null);
+      }
       MessengerInstance.Unregister<SelectedWindow>(this);
       RequestClose?.Invoke(this, EventArgs.Empty);
 
