@@ -269,8 +269,7 @@ namespace PictureInPicture.ViewModels
 
     private NativeStructs.Rect _sizeRestriction;
     private WindowInfo _windowInfo;
-
-    private CancellationTokenSource _mlSource;
+    private SelectedWindow _selectedWindow;
 
     #endregion
 
@@ -386,6 +385,8 @@ namespace PictureInPicture.ViewModels
 
     private void HandleSelectedWindowChange(SelectedWindow selectedWindow)
     {
+      _selectedWindow = selectedWindow;
+
       if (selectedWindow != null)
       {
         MessengerInstance.Unregister<SelectedWindow>(this);
@@ -462,7 +463,6 @@ namespace PictureInPicture.ViewModels
     private void ClosingCommandExecute()
     {
       Logger.Instance.Info("   |||||| Close CropperWindow ||||||   ");
-      _mlSource?.Cancel();
       MessengerInstance.Unregister<WindowInfo>(this);
       MessengerInstance.Unregister<Action<NativeStructs.Rect>>(this);
     }
@@ -478,6 +478,10 @@ namespace PictureInPicture.ViewModels
 
       var selectedWindow = new SelectedWindow(_windowInfo, SelectedRegion);
       selectedWindow.PictureInPictureEnabled = true;
+      if (_selectedWindow != null)
+      {
+        selectedWindow.PipPosition = _selectedWindow.PipPosition;
+      }
       MessengerInstance.Send(selectedWindow);
 
       RequestClose?.Invoke(this, EventArgs.Empty);

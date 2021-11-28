@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
@@ -311,7 +312,14 @@ namespace PictureInPicture.ViewModels
       _renderSizeEventDisabled = false;
 
       SetSize(DefaultSizePercentage);
-      SetPosition(Position.BottomLeft);
+      if (SelectedWindow != null && SelectedWindow.HasPosition)
+      {
+        SetPosition(Position.TopLeft);
+      }
+      else
+      {
+        SetPositionFromSelectedWindow();
+      }
 
       InitDwmThumbnail();
 
@@ -409,6 +417,16 @@ namespace PictureInPicture.ViewModels
             Width * _selectedWindow.RatioHeightByWidth
         );
       }
+      _renderSizeEventDisabled = false;
+    }
+
+    private void SetPositionFromSelectedWindow()
+    {
+      _renderSizeEventDisabled = true;
+
+      Top = (int)SelectedWindow.PipPosition.Y;
+      Left = (int)SelectedWindow.PipPosition.X;
+
       _renderSizeEventDisabled = false;
     }
 
@@ -560,6 +578,7 @@ namespace PictureInPicture.ViewModels
     private void CloseCommandExecute()
     {
       _selectedWindow.PictureInPictureEnabled = false;
+      _selectedWindow.PipPosition = new Vector2(Left, Top);
       MessengerInstance.Send(_selectedWindow);
       MessengerInstance.Unregister<SelectedWindow>(this);
       RequestClose?.Invoke(this, EventArgs.Empty);

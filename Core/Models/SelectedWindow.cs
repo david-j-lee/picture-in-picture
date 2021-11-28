@@ -1,5 +1,5 @@
-﻿using PictureInPicture.Native;
-using PictureInPicture.Shared.Helpers;
+﻿using System.Numerics;
+using PictureInPicture.Native;
 
 namespace PictureInPicture.DataModel
 {
@@ -12,6 +12,11 @@ namespace PictureInPicture.DataModel
 
     public bool PictureInPictureEnabled { get; set; }
     public bool DisableControls { get; set; }
+    public Vector2 PipPosition { get; set; }
+    public bool HasPosition
+    {
+      get => PipPosition.X != -1 && PipPosition.Y != -1;
+    }
 
     public NativeStructs.Rect SelectedRegionNoBorder =>
         new NativeStructs.Rect(
@@ -62,6 +67,8 @@ namespace PictureInPicture.DataModel
           selectedRegion.Right + WindowInfo.Border.Left,
           selectedRegion.Bottom + WindowInfo.Border.Top
       );
+
+      PipPosition = new Vector2(-1, -1); // Use -1 as null value
     }
   }
 }

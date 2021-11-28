@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Numerics;
 using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
@@ -196,9 +197,8 @@ namespace PictureInPicture.ViewModels
     private void StartPip(NativeStructs.Rect selectedRegion)
     {
       _pipModeWindow = new PiPModeWindow();
-      MessengerInstance.Send(
-          new SelectedWindow(SelectedWindowInfo, selectedRegion)
-      );
+      SelectedWindow.SelectedRegion = selectedRegion;
+      MessengerInstance.Send(SelectedWindow);
       _pipModeWindow.Show();
     }
 
@@ -262,6 +262,8 @@ namespace PictureInPicture.ViewModels
         && SelectedWindow.PictureInPictureEnabled
         && _pipModeWindow != null)
       {
+        _selectedWindow.PipPosition = new Vector2(
+          (float)_pipModeWindow.Left, (float)_pipModeWindow.Top);
         _pipModeWindow.Close();
         SelectedWindow.PictureInPictureEnabled = false;
 
