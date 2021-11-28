@@ -314,11 +314,11 @@ namespace PictureInPicture.ViewModels
       SetSize(DefaultSizePercentage);
       if (SelectedWindow != null && SelectedWindow.HasPosition)
       {
-        SetPosition(Position.TopLeft);
+        SetPositionFromSelectedWindow();
       }
       else
       {
-        SetPositionFromSelectedWindow();
+        SetPosition(Position.TopLeft);
       }
 
       InitDwmThumbnail();
