@@ -50,6 +50,7 @@ namespace PictureInPicture.ViewModels
           ShowCropper();
         }
         RaisePropertyChanged();
+        RaisePropertyChanged(nameof(InfoText));
       }
     }
     public SelectedWindow SelectedWindow
@@ -64,6 +65,7 @@ namespace PictureInPicture.ViewModels
         _selectedWindow = value;
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(HasSelectedWindow));
+        RaisePropertyChanged(nameof(InfoText));
       }
     }
     /// <summary>
@@ -101,6 +103,26 @@ namespace PictureInPicture.ViewModels
           MessengerInstance.Send(SelectedWindow);
         }
         RaisePropertyChanged();
+      }
+    }
+
+    public string InfoText
+    {
+      get
+      {
+        if (SelectedWindowInfo == null)
+        {
+          return "Click the \"Select a window\" button to get started";
+        }
+        if (SelectedWindowInfo != null && SelectedWindow == null)
+        {
+          return "Setting up " + SelectedWindowInfo.Title;
+        }
+        if (SelectedWindow != null)
+        {
+          return SelectedWindowInfo.Title + " is ready";
+        }
+        return "";
       }
     }
 

@@ -61,7 +61,7 @@ namespace PictureInPicture.ViewModels
       {
         _locked = value;
         RaisePropertyChanged();
-        RaisePropertyChanged("ResizeMode");
+        RaisePropertyChanged(nameof(ResizeMode));
       }
     }
 

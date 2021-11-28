@@ -152,7 +152,7 @@
         VerticalAlignment="Center"
         Foreground="White"
         FontSize="16"
-        Text="{StaticResource Welcome}">
+        Text="{Binding InfoText}">
       </TextBlock>
     </Grid>
 
