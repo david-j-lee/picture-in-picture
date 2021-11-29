@@ -4,8 +4,9 @@ using System.Linq;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Input;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
+using Microsoft.Toolkit.Mvvm.Messaging;
 using PictureInPicture.DataModel;
 using PictureInPicture.Interfaces;
 using PictureInPicture.Native;
@@ -15,7 +16,7 @@ using PictureInPicture.Views;
 
 namespace PictureInPicture.ViewModels
 {
-  public class MainViewModel : ViewModelBase, ICloseable
+  public class MainViewModel : ObservableRecipient, ICloseable
   {
     #region public
 
@@ -49,8 +50,8 @@ namespace PictureInPicture.ViewModels
         {
           ShowCropper();
         }
-        RaisePropertyChanged();
-        RaisePropertyChanged(nameof(InfoText));
+        OnPropertyChanged();
+        OnPropertyChanged(nameof(InfoText));
       }
     }
     public SelectedWindow SelectedWindow
@@ -63,9 +64,9 @@ namespace PictureInPicture.ViewModels
           return;
         }
         _selectedWindow = value;
-        RaisePropertyChanged();
-        RaisePropertyChanged(nameof(HasSelectedWindow));
-        RaisePropertyChanged(nameof(InfoText));
+        OnPropertyChanged();
+        OnPropertyChanged(nameof(HasSelectedWindow));
+        OnPropertyChanged(nameof(InfoText));
       }
     }
     /// <summary>
@@ -77,7 +78,7 @@ namespace PictureInPicture.ViewModels
       set
       {
         _windowsList = value;
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
 
@@ -87,7 +88,7 @@ namespace PictureInPicture.ViewModels
       set
       {
         _enableTargetNextFocusedWindow = value;
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
 
@@ -100,9 +101,9 @@ namespace PictureInPicture.ViewModels
         if (SelectedWindow != null)
         {
           SelectedWindow.DisableControls = _lockPipControls;
-          MessengerInstance.Send(SelectedWindow);
+          Messenger.Send(SelectedWindow);
         }
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
 
@@ -156,8 +157,10 @@ namespace PictureInPicture.ViewModels
 
       WindowsList = new ObservableCollection<WindowInfo>();
 
-      MessengerInstance.Register<PiPModeWindow>(this, HandlePipModeWindowChange);
-      MessengerInstance.Register<SelectedWindow>(this, HandleSelectedWindowChange);
+      Messenger.Register<PiPModeWindow>(
+        this, (_, m) => HandlePipModeWindowChange(m));
+      Messenger.Register<SelectedWindow>(
+        this, (_, m) => HandleSelectedWindowChange(m));
 
       ProcessesService.Instance.OpenWindowsChanged += OpenWindowsChanged;
       ProcessesService.Instance.ForegroundWindowChanged +=
@@ -197,7 +200,7 @@ namespace PictureInPicture.ViewModels
     {
       _cropperWindow?.Close();
       _cropperWindow = new CropperWindow();
-      MessengerInstance.Send(SelectedWindowInfo);
+      Messenger.Send(SelectedWindowInfo);
       _cropperWindow.Show();
     }
 
@@ -220,7 +223,7 @@ namespace PictureInPicture.ViewModels
     {
       _pipModeWindow = new PiPModeWindow();
       SelectedWindow.SelectedRegion = selectedRegion;
-      MessengerInstance.Send(SelectedWindow);
+      Messenger.Send(SelectedWindow);
       _pipModeWindow.Show();
     }
 
@@ -278,7 +281,7 @@ namespace PictureInPicture.ViewModels
     {
       if (SelectedWindowInfo == null)
       {
-        MessengerInstance.Send<Action<NativeStructs.Rect>>(StartPip);
+        Messenger.Send<Action<NativeStructs.Rect>>(StartPip);
       }
       else if (SelectedWindow != null
         && SelectedWindow.PictureInPictureEnabled
@@ -311,7 +314,7 @@ namespace PictureInPicture.ViewModels
       if (SelectedWindow != null)
       {
         SelectedWindow.DisableControls = true;
-        MessengerInstance.Send(SelectedWindow);
+        Messenger.Send(SelectedWindow);
       }
     }
 
@@ -326,8 +329,8 @@ namespace PictureInPicture.ViewModels
       {
         _cropperWindow?.Close();
         _cropperWindow = new CropperWindow();
-        MessengerInstance.Send(SelectedWindowInfo);
-        MessengerInstance.Send(SelectedWindow);
+        Messenger.Send(SelectedWindowInfo);
+        Messenger.Send(SelectedWindow);
         _cropperWindow.Show();
       }
     }
@@ -348,8 +351,8 @@ namespace PictureInPicture.ViewModels
     {
       Logger.Instance.Info("   |||||| Close MainWindow ||||||   ");
 
-      MessengerInstance.Unregister<PiPModeWindow>(this);
-      MessengerInstance.Unregister<SelectedWindow>(this);
+      Messenger.Unregister<PiPModeWindow>(this);
+      Messenger.Unregister<SelectedWindow>(this);
       ProcessesService.Instance.OpenWindowsChanged -= OpenWindowsChanged;
       ProcessesService.Instance.ForegroundWindowChanged -=
           ForegroundWindowChanged;

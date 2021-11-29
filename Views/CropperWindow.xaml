@@ -6,7 +6,7 @@
   xmlns:fa5="http://schemas.fontawesome.com/icons/"
   xmlns:system="clr-namespace:System;assembly=mscorlib"
   xmlns:viewModels="clr-namespace:PictureInPicture.ViewModels"
-  xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+  xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
   mc:Ignorable="d"
   AllowsTransparency="True"
   WindowStyle="None"
@@ -21,11 +21,11 @@
     <viewModels:CropperViewModel/>
   </Window.DataContext>
 
-  <i:Interaction.Triggers>
-    <i:EventTrigger EventName="Closing">
-      <i:InvokeCommandAction Command="{Binding ClosingCommand}"/>
-    </i:EventTrigger>
-  </i:Interaction.Triggers>
+  <behaviors:Interaction.Triggers>
+    <behaviors:EventTrigger EventName="Closing">
+      <behaviors:InvokeCommandAction Command="{Binding ClosingCommand}"/>
+    </behaviors:EventTrigger>
+  </behaviors:Interaction.Triggers>
 
   <Window.Resources>
     <ResourceDictionary>
