@@ -32,6 +32,6 @@ namespace PictureInPicture.Shared
 
     public static int MinCropperHeight => 180;
 
-    public static byte PiPOpacityOnHover => 150;
+    public static byte PipOpacityOnHover => 150;
   }
 }

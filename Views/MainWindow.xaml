@@ -107,7 +107,7 @@
           Margin="10, 0">|</TextBlock>
 
         <Button x:Name="ButtonPip"
-          ToolTip="{StaticResource EnterPiPMode}"
+          ToolTip="{StaticResource EnterPipMode}"
           Margin="0, 15, 10, 15"
           Width="40"
           Height="35"
@@ -121,7 +121,7 @@
 
         <ToggleButton x:Name="ButtonLock"
           IsChecked="{Binding LockPipControls, Mode=TwoWay}"
-          ToolTip="{StaticResource LockPiPControls}"
+          ToolTip="{StaticResource LockPipControls}"
           Margin="0, 15, 10, 15"
           Width="40"
           Height="35">
@@ -133,7 +133,7 @@
         </ToggleButton>
 
         <Button x:Name="ButtonSetup"
-          ToolTip="{StaticResource SetupPiP}"
+          ToolTip="{StaticResource SetupPip}"
           Margin="0, 15, 10, 15"
           Width="40"
           Height="35"

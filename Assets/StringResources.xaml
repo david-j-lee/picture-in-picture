@@ -3,10 +3,10 @@
     xmlns:system="clr-namespace:System;assembly=mscorlib">
     <system:String x:Key="SelectWindow">Select a window</system:String>
     <system:String x:Key="SetupFocusedWindow">Setup next focused window</system:String>
-    <system:String x:Key="EnterPiPMode">Toggle picture in picture</system:String>
-    <system:String x:Key="LockPiPControls">Lock picture in picture</system:String>
-    <system:String x:Key="SetupPiP">Setup picture in picture</system:String>
-    <system:String x:Key="ClosePiP">Close and return</system:String>
+    <system:String x:Key="EnterPipMode">Toggle picture in picture</system:String>
+    <system:String x:Key="LockPipControls">Lock picture in picture</system:String>
+    <system:String x:Key="SetupPip">Setup picture in picture</system:String>
+    <system:String x:Key="ClosePip">Close and return</system:String>
     <system:String x:Key="Quit">Quit</system:String>
     <system:String x:Key="SelectNewWindow">Select a new window</system:String>
 </ResourceDictionary>

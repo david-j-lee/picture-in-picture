@@ -3,16 +3,16 @@ using PictureInPicture.Interfaces;
 
 namespace PictureInPicture.Views
 {
-  /// <inheritdoc cref="PiPModeWindow" />
+  /// <inheritdoc cref="PipModeWindow" />
   /// <summary>
-  /// Logique d'interaction pour PiPModeWindow.xaml
+  /// Logique d'interaction pour PipModeWindow.xaml
   /// </summary>
-  public partial class PiPModeWindow
+  public partial class PipModeWindow
   {
     /// <summary>
     /// Constructor
     /// </summary>
-    public PiPModeWindow()
+    public PipModeWindow()
     {
       InitializeComponent();
 

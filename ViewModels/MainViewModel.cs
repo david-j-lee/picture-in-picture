@@ -135,7 +135,7 @@ namespace PictureInPicture.ViewModels
     private CropperWindow _cropperWindow;
     private WindowInfo _selectedWindowInfo;
     private SelectedWindow _selectedWindow;
-    private PiPModeWindow _pipModeWindow;
+    private PipModeWindow _pipModeWindow;
     private bool _enableTargetNextFocusedWindow = false;
     private bool _lockPipControls = false;
 
@@ -157,7 +157,7 @@ namespace PictureInPicture.ViewModels
 
       WindowsList = new ObservableCollection<WindowInfo>();
 
-      Messenger.Register<PiPModeWindow>(
+      Messenger.Register<PipModeWindow>(
         this, (_, m) => HandlePipModeWindowChange(m));
       Messenger.Register<SelectedWindow>(
         this, (_, m) => HandleSelectedWindowChange(m));
@@ -204,7 +204,7 @@ namespace PictureInPicture.ViewModels
       _cropperWindow.Show();
     }
 
-    private void HandlePipModeWindowChange(PiPModeWindow pipModeWindow)
+    private void HandlePipModeWindowChange(PipModeWindow pipModeWindow)
     {
       _pipModeWindow = pipModeWindow;
     }
@@ -216,12 +216,12 @@ namespace PictureInPicture.ViewModels
     }
 
     /// <summary>
-    /// Callback in <see cref="StartPipCommandExecute"/>. Show <see cref="PiPModeWindow"/> and send selected window
+    /// Callback in <see cref="StartPipCommandExecute"/>. Show <see cref="PipModeWindow"/> and send selected window
     /// </summary>
     /// <param name="selectedRegion"></param>
     private void StartPip(NativeStructs.Rect selectedRegion)
     {
-      _pipModeWindow = new PiPModeWindow();
+      _pipModeWindow = new PipModeWindow();
       SelectedWindow.SelectedRegion = selectedRegion;
       Messenger.Send(SelectedWindow);
       _pipModeWindow.Show();
@@ -351,7 +351,7 @@ namespace PictureInPicture.ViewModels
     {
       Logger.Instance.Info("   |||||| Close MainWindow ||||||   ");
 
-      Messenger.Unregister<PiPModeWindow>(this);
+      Messenger.Unregister<PipModeWindow>(this);
       Messenger.Unregister<SelectedWindow>(this);
       ProcessesService.Instance.OpenWindowsChanged -= OpenWindowsChanged;
       ProcessesService.Instance.ForegroundWindowChanged -=

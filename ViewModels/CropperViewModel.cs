@@ -444,7 +444,7 @@ namespace PictureInPicture.ViewModels
     }
 
     /// <summary>
-    /// Called from <see cref="MainViewModel"/> to get cropped region and start PiP mode
+    /// Called from <see cref="MainViewModel"/> to get cropped region and start Pip mode
     /// </summary>
     /// <param name="cb">Callback with cropped region</param>
     private void StartPip(Action<NativeStructs.Rect> cb)
@@ -466,11 +466,11 @@ namespace PictureInPicture.ViewModels
     }
 
     /// <summary>
-    /// Executed on click on check button. Start up PiP
+    /// Executed on click on check button. Start up Pip
     /// </summary>
     private void StartCommandExecute()
     {
-      var pip = new PiPModeWindow();
+      var pip = new PipModeWindow();
       pip.Show();
       Messenger.Send(pip);
 

@@ -25,7 +25,7 @@ using Point = System.Drawing.Point;
 
 namespace PictureInPicture.ViewModels
 {
-  public class PiPModeViewModel : ObservableRecipient, ICloseable, IDisposable
+  public class PipModeViewModel : ObservableRecipient, ICloseable, IDisposable
   {
     #region public
 
@@ -222,9 +222,9 @@ namespace PictureInPicture.ViewModels
     /// <summary>
     /// Constructor
     /// </summary>
-    public PiPModeViewModel()
+    public PipModeViewModel()
     {
-      Logger.Instance.Info("   ====== PiPModeWindow ======   ");
+      Logger.Instance.Info("   ====== PipModeWindow ======   ");
 
       LoadedCommand = new RelayCommand(LoadedCommandExecute);
       CloseCommand = new RelayCommand(CloseCommandExecute);
@@ -257,7 +257,7 @@ namespace PictureInPicture.ViewModels
 
       if (selectedWindow == null || selectedWindow.WindowInfo == null)
       {
-        Logger.Instance.Error("Can't init PiP mode");
+        Logger.Instance.Error("Can't init Pip mode");
         return;
       }
 
@@ -285,9 +285,9 @@ namespace PictureInPicture.ViewModels
     private void Initialize(SelectedWindow selectedWindow)
     {
       Logger.Instance.Info(
-          "Init PiP mode : " + selectedWindow.WindowInfo.Title
+          "Init Pip mode : " + selectedWindow.WindowInfo.Title
       );
-      Title = selectedWindow.WindowInfo.Title + " - PiP Mode - PictureInPicture";
+      Title = selectedWindow.WindowInfo.Title + " - Pip Mode - PictureInPicture";
 
       _renderSizeEventDisabled = true;
       ControlsVisibility = Visibility.Hidden;
@@ -589,7 +589,7 @@ namespace PictureInPicture.ViewModels
     /// </summary>
     private void ClosingCommandExecute()
     {
-      Logger.Instance.Info("   |||||| Close PiPModeWindow ||||||   ");
+      Logger.Instance.Info("   |||||| Close PipModeWindow ||||||   ");
       Dispose();
     }
 
@@ -618,7 +618,7 @@ namespace PictureInPicture.ViewModels
     private void MouseEnterCommandExecute(MouseEventArgs e)
     {
       // TODO: only set opacity on video, this is also effecting the button
-      _opacity = Constants.PiPOpacityOnHover;
+      _opacity = Constants.PipOpacityOnHover;
 
       if (ControlsAreVisible || Locked)
       {
