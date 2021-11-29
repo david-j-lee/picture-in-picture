@@ -8,14 +8,16 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
+using Microsoft.Toolkit.Mvvm.Messaging;
 using PictureInPicture.DataModel;
 using PictureInPicture.Interfaces;
 using PictureInPicture.Native;
 using PictureInPicture.Shared;
 using PictureInPicture.Shared.Helpers;
 using PictureInPicture.Views;
+
 using Application = System.Windows.Application;
 using Brush = System.Windows.Media.Brush;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
@@ -23,7 +25,7 @@ using Point = System.Drawing.Point;
 
 namespace PictureInPicture.ViewModels
 {
-  public class PiPModeViewModel : ViewModelBase, ICloseable, IDisposable
+  public class PiPModeViewModel : ObservableRecipient, ICloseable, IDisposable
   {
     #region public
 
@@ -36,7 +38,7 @@ namespace PictureInPicture.ViewModels
       set
       {
         _title = value;
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
 
@@ -60,8 +62,8 @@ namespace PictureInPicture.ViewModels
       set
       {
         _locked = value;
-        RaisePropertyChanged();
-        RaisePropertyChanged(nameof(ResizeMode));
+        OnPropertyChanged();
+        OnPropertyChanged(nameof(ResizeMode));
       }
     }
 
@@ -71,7 +73,7 @@ namespace PictureInPicture.ViewModels
       set
       {
         _selectedWindow = value;
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
 
@@ -90,7 +92,7 @@ namespace PictureInPicture.ViewModels
       {
         _minHeight = value;
         UpdateDwmThumbnail();
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
     /// <summary>
@@ -103,7 +105,7 @@ namespace PictureInPicture.ViewModels
       {
         _minWidth = value;
         UpdateDwmThumbnail();
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
     /// <summary>
@@ -116,7 +118,7 @@ namespace PictureInPicture.ViewModels
       {
         _top = value;
         UpdateDwmThumbnail();
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
     /// <summary>
@@ -129,7 +131,7 @@ namespace PictureInPicture.ViewModels
       {
         _left = value;
         UpdateDwmThumbnail();
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
     /// <summary>
@@ -142,7 +144,7 @@ namespace PictureInPicture.ViewModels
       {
         _height = value;
         UpdateDwmThumbnail();
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
     /// <summary>
@@ -155,7 +157,7 @@ namespace PictureInPicture.ViewModels
       {
         _width = value;
         UpdateDwmThumbnail();
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
     /// <summary>
@@ -173,7 +175,7 @@ namespace PictureInPicture.ViewModels
       {
         _controlsVisibility = value;
         UpdateDwmThumbnail();
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
 
@@ -238,10 +240,8 @@ namespace PictureInPicture.ViewModels
       );
       DpiChangedCommand = new RelayCommand(DpiChangedCommandExecute);
 
-      MessengerInstance.Register<SelectedWindow>(
-          this,
-          HandleSelectedWindowChange
-      );
+      Messenger.Register<SelectedWindow>(
+          this, (_, m) => HandleSelectedWindowChange(m));
 
       MinHeight = MinSize;
       MinWidth = MinSize;
@@ -579,8 +579,8 @@ namespace PictureInPicture.ViewModels
     {
       _selectedWindow.PictureInPictureEnabled = false;
       _selectedWindow.PipPosition = new Vector2(Left, Top);
-      MessengerInstance.Send(_selectedWindow);
-      MessengerInstance.Unregister<SelectedWindow>(this);
+      Messenger.Send(_selectedWindow);
+      Messenger.Unregister<SelectedWindow>(this);
       RequestClose?.Invoke(this, EventArgs.Empty);
     }
 
@@ -627,7 +627,7 @@ namespace PictureInPicture.ViewModels
       _renderSizeEventDisabled = true;
       ControlsVisibility = Visibility.Visible;
       _renderSizeEventDisabled = false;
-      e.Handled = true;
+      // e.Handled = true;
     }
 
     /// <summary>
@@ -656,7 +656,7 @@ namespace PictureInPicture.ViewModels
       _renderSizeEventDisabled = true;
       ControlsVisibility = Visibility.Hidden;
       _renderSizeEventDisabled = false;
-      e.Handled = true;
+      // e.Handled = true;
     }
 
     /// <summary>

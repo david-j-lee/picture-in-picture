@@ -5,8 +5,7 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:fa5="http://schemas.fontawesome.com/icons/"
   xmlns:viewModels="clr-namespace:PictureInPicture.ViewModels"
-  xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-  xmlns:command="http://www.galasoft.ch/mvvmlight"
+  xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
   mc:Ignorable="d"
   Title="{Binding Title, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
   ResizeMode="{Binding ResizeMode}"
@@ -28,23 +27,22 @@
     <viewModels:PiPModeViewModel />
   </Window.DataContext>
 
-  <i:Interaction.Triggers>
-    <i:EventTrigger EventName="Loaded">
-      <command:EventToCommand Command="{Binding LoadedCommand}"
+  <behaviors:Interaction.Triggers>
+    <behaviors:EventTrigger EventName="Loaded">
+      <behaviors:InvokeCommandAction Command="{Binding LoadedCommand}" />
+    </behaviors:EventTrigger>
+    <behaviors:EventTrigger EventName="MouseEnter">
+      <behaviors:InvokeCommandAction Command="{Binding MouseEnterCommand}"
         PassEventArgsToCommand="True" />
-    </i:EventTrigger>
-    <i:EventTrigger EventName="MouseEnter">
-      <command:EventToCommand Command="{Binding MouseEnterCommand}"
+    </behaviors:EventTrigger>
+    <behaviors:EventTrigger EventName="MouseLeave">
+      <behaviors:InvokeCommandAction Command="{Binding MouseLeaveCommand}"
         PassEventArgsToCommand="True" />
-    </i:EventTrigger>
-    <i:EventTrigger EventName="MouseLeave">
-      <command:EventToCommand Command="{Binding MouseLeaveCommand}"
-        PassEventArgsToCommand="True" />
-    </i:EventTrigger>
-    <i:EventTrigger EventName="DpiChanged">
-      <command:EventToCommand Command="{Binding DpiChangedCommand}" />
-    </i:EventTrigger>
-  </i:Interaction.Triggers>
+    </behaviors:EventTrigger>
+    <behaviors:EventTrigger EventName="DpiChanged">
+      <behaviors:InvokeCommandAction Command="{Binding DpiChangedCommand}" />
+    </behaviors:EventTrigger>
+  </behaviors:Interaction.Triggers>
 
   <Grid VerticalAlignment="Stretch"
     HorizontalAlignment="Stretch">

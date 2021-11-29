@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
+using Microsoft.Toolkit.Mvvm.Messaging;
 using PictureInPicture.DataModel;
 using PictureInPicture.Interfaces;
 using PictureInPicture.Native;
@@ -15,7 +14,7 @@ using PictureInPicture.Views;
 
 namespace PictureInPicture.ViewModels
 {
-  public class CropperViewModel : ViewModelBase, ICloseable
+  public class CropperViewModel : ObservableRecipient, ICloseable
   {
     #region public
 
@@ -48,7 +47,7 @@ namespace PictureInPicture.ViewModels
       set
       {
         _title = value;
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
 
@@ -61,7 +60,7 @@ namespace PictureInPicture.ViewModels
       set
       {
         _windowTop = value;
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
     /// <summary>
@@ -73,7 +72,7 @@ namespace PictureInPicture.ViewModels
       set
       {
         _windowLeft = value;
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
     /// <summary>
@@ -85,7 +84,7 @@ namespace PictureInPicture.ViewModels
       set
       {
         _windowWidth = value;
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
     /// <summary>
@@ -97,7 +96,7 @@ namespace PictureInPicture.ViewModels
       set
       {
         _windowHeight = value;
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
     /// <summary>
@@ -109,7 +108,7 @@ namespace PictureInPicture.ViewModels
       set
       {
         _canvasMargin = value;
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
 
@@ -123,7 +122,7 @@ namespace PictureInPicture.ViewModels
       {
         _maxHeight = value;
         UpdateBottom();
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
     /// <summary>
@@ -136,7 +135,7 @@ namespace PictureInPicture.ViewModels
       {
         _maxWidth = value;
         UpdateRight();
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
     /// <summary>
@@ -148,7 +147,7 @@ namespace PictureInPicture.ViewModels
       set
       {
         _minHeight = value;
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
     /// <summary>
@@ -160,7 +159,7 @@ namespace PictureInPicture.ViewModels
       set
       {
         _minWidth = value;
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
 
@@ -174,7 +173,7 @@ namespace PictureInPicture.ViewModels
       {
         _height = value;
         UpdateBottom();
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
     /// <summary>
@@ -187,7 +186,7 @@ namespace PictureInPicture.ViewModels
       {
         _width = value;
         UpdateRight();
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
     /// <summary>
@@ -200,7 +199,7 @@ namespace PictureInPicture.ViewModels
       {
         _top = value;
         UpdateBottom();
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
     /// <summary>
@@ -213,7 +212,7 @@ namespace PictureInPicture.ViewModels
       {
         _left = value;
         UpdateRight();
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
     /// <summary>
@@ -226,7 +225,7 @@ namespace PictureInPicture.ViewModels
       set
       {
         _bottom = value;
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
     /// <summary>
@@ -239,7 +238,7 @@ namespace PictureInPicture.ViewModels
       set
       {
         _right = value;
-        RaisePropertyChanged();
+        OnPropertyChanged();
       }
     }
 
@@ -285,12 +284,11 @@ namespace PictureInPicture.ViewModels
       CloseCommand = new RelayCommand(CloseCommandExecute);
       StartCommand = new RelayCommand(StartCommandExecute);
 
-      MessengerInstance.Register<WindowInfo>(this, Init);
-      MessengerInstance.Register<SelectedWindow>(this, HandleSelectedWindowChange);
-      MessengerInstance.Register<Action<NativeStructs.Rect>>(
-          this,
-          StartPip
-      );
+      Messenger.Register<WindowInfo>(this, (_, m) => Init(m));
+      Messenger.Register<SelectedWindow>(
+        this, (_, m) => HandleSelectedWindowChange(m));
+      Messenger.Register<Action<NativeStructs.Rect>>(
+        this, (_, m) => StartPip(m));
     }
 
     /// <summary>
@@ -299,7 +297,7 @@ namespace PictureInPicture.ViewModels
     /// <param name="windowInfo">data of the window to crop</param>
     private void Init(WindowInfo windowInfo)
     {
-      MessengerInstance.Unregister<WindowInfo>(this);
+      Messenger.Unregister<WindowInfo>(this);
       _windowInfo = windowInfo;
       if (windowInfo == null)
       {
@@ -309,9 +307,9 @@ namespace PictureInPicture.ViewModels
         return;
       }
 
-      Logger.Instance.Info("Init cropper : " + windowInfo.Title);
+      Logger.Instance.Info("Init cropper : " + _windowInfo.Title);
 
-      Title = windowInfo.Title + " - Cropper - PictureInPicture";
+      Title = _windowInfo.Title + " - Cropper - PictureInPicture";
 
       _windowInfo.SetAsForegroundWindow();
       _sizeRestriction = _windowInfo.Rect - _windowInfo.Border;
@@ -389,12 +387,12 @@ namespace PictureInPicture.ViewModels
 
       if (selectedWindow != null)
       {
-        MessengerInstance.Unregister<SelectedWindow>(this);
+        Messenger.Unregister<SelectedWindow>(this);
 
-        Top = selectedWindow.SelectedRegion.Top;
-        Left = selectedWindow.SelectedRegion.Left;
-        Height = selectedWindow.SelectedRegion.Height;
-        Width = selectedWindow.SelectedRegion.Width;
+        Top = _selectedWindow.SelectedRegion.Top;
+        Left = _selectedWindow.SelectedRegion.Left;
+        Height = _selectedWindow.SelectedRegion.Height;
+        Width = _selectedWindow.SelectedRegion.Width;
       }
     }
 
@@ -451,7 +449,7 @@ namespace PictureInPicture.ViewModels
     /// <param name="cb">Callback with cropped region</param>
     private void StartPip(Action<NativeStructs.Rect> cb)
     {
-      MessengerInstance.Unregister<Action<NativeStructs.Rect>>(this);
+      Messenger.Unregister<Action<NativeStructs.Rect>>(this);
       cb(SelectedRegion);
     }
 
@@ -463,8 +461,8 @@ namespace PictureInPicture.ViewModels
     private void ClosingCommandExecute()
     {
       Logger.Instance.Info("   |||||| Close CropperWindow ||||||   ");
-      MessengerInstance.Unregister<WindowInfo>(this);
-      MessengerInstance.Unregister<Action<NativeStructs.Rect>>(this);
+      Messenger.Unregister<WindowInfo>(this);
+      Messenger.Unregister<Action<NativeStructs.Rect>>(this);
     }
 
     /// <summary>
@@ -474,7 +472,7 @@ namespace PictureInPicture.ViewModels
     {
       var pip = new PiPModeWindow();
       pip.Show();
-      MessengerInstance.Send(pip);
+      Messenger.Send(pip);
 
       var selectedWindow = new SelectedWindow(_windowInfo, SelectedRegion);
       selectedWindow.PictureInPictureEnabled = true;
@@ -482,7 +480,7 @@ namespace PictureInPicture.ViewModels
       {
         selectedWindow.PipPosition = _selectedWindow.PipPosition;
       }
-      MessengerInstance.Send(selectedWindow);
+      Messenger.Send(selectedWindow);
 
       RequestClose?.Invoke(this, EventArgs.Empty);
     }
@@ -492,10 +490,11 @@ namespace PictureInPicture.ViewModels
     /// </summary>
     private void CloseCommandExecute()
     {
-      if (_selectedWindow == null) {
-        MessengerInstance.Send<SelectedWindow>(null);
+      if (_selectedWindow == null)
+      {
+        Messenger.Send<SelectedWindow>(null);
       }
-      MessengerInstance.Unregister<SelectedWindow>(this);
+      Messenger.Unregister<SelectedWindow>(this);
       RequestClose?.Invoke(this, EventArgs.Empty);
 
       // TODO: This is a poor way to focus back to the MainViewModel.
