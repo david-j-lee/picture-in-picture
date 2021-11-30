@@ -1,0 +1,28 @@
+{
+  "name": "picture-in-picture",
+  "version": "0.0.0",
+  "description": "Windows Picture in Picture app",
+  "scripts": {
+    "test": "dotnet test",
+    "start": "dotnet run",
+    "np": "np --no-publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/david-j-lee/picture-in-picture.git"
+  },
+  "keywords": [
+    "Window",
+    "Picture in Picture",
+    "PiP"
+  ],
+  "author": "David Lee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/david-j-lee/picture-in-picture/issues"
+  },
+  "homepage": "https://github.com/david-j-lee/picture-in-picture#readme",
+  "devDependencies": {
+    "np": "^7.6.0"
+  }
+}
