@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using Microsoft.Extensions.Logging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
@@ -27,6 +28,8 @@ namespace PictureInPicture.ViewModels
 {
   public class PipModeViewModel : ObservableRecipient, ICloseable, IDisposable
   {
+    private readonly ILogger<PipModeViewModel> _logger;
+
     #region public
 
     /// <summary>
@@ -222,9 +225,10 @@ namespace PictureInPicture.ViewModels
     /// <summary>
     /// Constructor
     /// </summary>
-    public PipModeViewModel()
+    public PipModeViewModel(ILogger<PipModeViewModel> logger)
     {
-      Logger.Instance.Info("   ====== PipModeWindow ======   ");
+      _logger = logger;
+      _logger?.LogInformation("   ====== PipModeWindow ======   ");
 
       LoadedCommand = new RelayCommand(LoadedCommandExecute);
       CloseCommand = new RelayCommand(CloseCommandExecute);
@@ -257,7 +261,7 @@ namespace PictureInPicture.ViewModels
 
       if (selectedWindow == null || selectedWindow.WindowInfo == null)
       {
-        Logger.Instance.Error("Can't init Pip mode");
+        _logger?.LogError("Can't init Pip mode");
         return;
       }
 
@@ -284,7 +288,7 @@ namespace PictureInPicture.ViewModels
 
     private void Initialize(SelectedWindow selectedWindow)
     {
-      Logger.Instance.Info(
+      _logger?.LogInformation(
           "Init Pip mode : " + selectedWindow.WindowInfo.Title
       );
       Title = selectedWindow.WindowInfo.Title + " - Pip Mode - PictureInPicture";
@@ -555,8 +559,10 @@ namespace PictureInPicture.ViewModels
 
     /// <summary>
     /// Executed when the window is loaded. Get handle of the window and call <see cref="InitDwmThumbnail"/> 
+    /// This does not work when setup in the xaml template. This command had to be registered in the view model
+    /// class instead. As a result, it has been made public.
     /// </summary>
-    private void LoadedCommandExecute()
+    public void LoadedCommandExecute()
     {
       ((HwndSource)PresentationSource.FromVisual(ThisWindow()))?.AddHook(
           DragHook
@@ -589,7 +595,7 @@ namespace PictureInPicture.ViewModels
     /// </summary>
     private void ClosingCommandExecute()
     {
-      Logger.Instance.Info("   |||||| Close PipModeWindow ||||||   ");
+      _logger?.LogInformation("   |||||| Close PipModeWindow ||||||   ");
       Dispose();
     }
 

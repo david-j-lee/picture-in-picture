@@ -1,11 +1,13 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using Microsoft.Extensions.DependencyInjection;
 using PictureInPicture.Interfaces;
+using PictureInPicture.ViewModels;
 
 namespace PictureInPicture.Views
 {
   /// <summary>
-  /// Logique d'interaction pour MainWindow.xaml
+  /// View class for MainWindow.xaml
   /// </summary>
   public partial class MainWindow
   {
@@ -17,7 +19,8 @@ namespace PictureInPicture.Views
     /// </summary>
     public MainWindow()
     {
-      InitializeComponent();
+      this.InitializeComponent();
+      DataContext = App.Current.Services.GetService<MainViewModel>();
 
       Loaded += (s, e) =>
       {

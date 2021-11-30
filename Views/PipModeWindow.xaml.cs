@@ -1,11 +1,14 @@
-﻿using System.Windows.Input;
+﻿using System.Windows;
+using System.Windows.Input;
+using Microsoft.Extensions.DependencyInjection;
 using PictureInPicture.Interfaces;
+using PictureInPicture.ViewModels;
 
 namespace PictureInPicture.Views
 {
   /// <inheritdoc cref="PipModeWindow" />
   /// <summary>
-  /// Logique d'interaction pour PipModeWindow.xaml
+  /// View class for PipModeWindow.xaml
   /// </summary>
   public partial class PipModeWindow
   {
@@ -15,6 +18,11 @@ namespace PictureInPicture.Views
     public PipModeWindow()
     {
       InitializeComponent();
+
+      var viewModel = App.Current.Services.GetService<PipModeViewModel>();
+      DataContext = viewModel;
+
+      Loaded += new RoutedEventHandler((s, e) => viewModel.LoadedCommandExecute());
 
       Loaded += (s, e) =>
       {
