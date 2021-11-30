@@ -295,6 +295,8 @@ namespace PictureInPicture.ViewModels
         && SelectedWindow.PictureInPictureEnabled
         && _pipModeWindow != null)
       {
+        _selectedWindow.PipSize = new Vector2(
+          (float)_pipModeWindow.Width, (float)_pipModeWindow.Height);
         _selectedWindow.PipPosition = new Vector2(
           (float)_pipModeWindow.Left, (float)_pipModeWindow.Top);
         _pipModeWindow.Close();
@@ -338,7 +340,13 @@ namespace PictureInPicture.ViewModels
         _cropperWindow?.Close();
         _cropperWindow = new CropperWindow();
         Messenger.Send(SelectedWindowInfo);
+
+        _selectedWindow.PipSize = new Vector2(
+          (float)_pipModeWindow.Width, (float)_pipModeWindow.Height);
+        _selectedWindow.PipPosition = new Vector2(
+          (float)_pipModeWindow.Left, (float)_pipModeWindow.Top);
         Messenger.Send(SelectedWindow);
+
         _cropperWindow.Show();
       }
     }

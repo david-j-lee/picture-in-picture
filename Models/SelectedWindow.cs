@@ -13,9 +13,14 @@ namespace PictureInPicture.DataModel
     public bool PictureInPictureEnabled { get; set; }
     public bool DisableControls { get; set; }
     public Vector2 PipPosition { get; set; }
-    public bool HasPosition
+    public bool HasPipPosition
     {
       get => PipPosition.X != -1 && PipPosition.Y != -1;
+    }
+    public Vector2 PipSize { get; set; }
+    public bool HasPipSize
+    {
+      get => PipSize.X != -1 && PipSize.Y != -1;
     }
 
     public NativeStructs.Rect SelectedRegionNoBorder =>
@@ -68,6 +73,7 @@ namespace PictureInPicture.DataModel
           selectedRegion.Bottom + WindowInfo.Border.Top
       );
 
+      PipSize = new Vector2(-1, -1); // Use -1 as null value
       PipPosition = new Vector2(-1, -1); // Use -1 as null value
     }
   }

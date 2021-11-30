@@ -315,15 +315,8 @@ namespace PictureInPicture.ViewModels
 
       _renderSizeEventDisabled = false;
 
-      SetSize(DefaultSizePercentage);
-      if (SelectedWindow != null && SelectedWindow.HasPosition)
-      {
-        SetPositionFromSelectedWindow();
-      }
-      else
-      {
-        SetPosition(Position.TopLeft);
-      }
+      SetSize();
+      SetPosition();
 
       InitDwmThumbnail();
 
@@ -398,10 +391,32 @@ namespace PictureInPicture.ViewModels
       );
     }
 
+    private void SetSize()
+    {
+      if (SelectedWindow != null && SelectedWindow.HasPipSize)
+      {
+        SetSizeFromSelectedWindow();
+      }
+      else
+      {
+        SetSizeToDefault(DefaultSizePercentage);
+      }
+    }
+
+    private void SetSizeFromSelectedWindow()
+    {
+      _renderSizeEventDisabled = true;
+
+      Width = (int)SelectedWindow.PipSize.X;
+      Height = (int)SelectedWindow.PipSize.Y;
+
+      _renderSizeEventDisabled = false;
+    }
+
     /// <summary>
     /// Set size of this window
     /// </summary>
-    private void SetSize(float sizePercentage)
+    private void SetSizeToDefault(float sizePercentage)
     {
       _renderSizeEventDisabled = true;
 
@@ -424,6 +439,18 @@ namespace PictureInPicture.ViewModels
       _renderSizeEventDisabled = false;
     }
 
+    private void SetPosition()
+    {
+      if (SelectedWindow != null && SelectedWindow.HasPipPosition)
+      {
+        SetPositionFromSelectedWindow();
+      }
+      else
+      {
+        SetPositionToDefault(Position.TopLeft);
+      }
+    }
+
     private void SetPositionFromSelectedWindow()
     {
       _renderSizeEventDisabled = true;
@@ -437,7 +464,7 @@ namespace PictureInPicture.ViewModels
     /// <summary>
     /// Set position of this window
     /// </summary>
-    private void SetPosition(Position position)
+    private void SetPositionToDefault(Position position)
     {
       _renderSizeEventDisabled = true;
       var resolutionWidth = (int)(
@@ -585,6 +612,7 @@ namespace PictureInPicture.ViewModels
     {
       _selectedWindow.PictureInPictureEnabled = false;
       _selectedWindow.PipPosition = new Vector2(Left, Top);
+      _selectedWindow.PipSize = new Vector2(Width, Height);
       Messenger.Send(_selectedWindow);
       Messenger.Unregister<SelectedWindow>(this);
       RequestClose?.Invoke(this, EventArgs.Empty);
@@ -633,7 +661,6 @@ namespace PictureInPicture.ViewModels
       _renderSizeEventDisabled = true;
       ControlsVisibility = Visibility.Visible;
       _renderSizeEventDisabled = false;
-      // e.Handled = true;
     }
 
     /// <summary>
@@ -662,7 +689,6 @@ namespace PictureInPicture.ViewModels
       _renderSizeEventDisabled = true;
       ControlsVisibility = Visibility.Hidden;
       _renderSizeEventDisabled = false;
-      // e.Handled = true;
     }
 
     /// <summary>

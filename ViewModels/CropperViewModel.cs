@@ -482,6 +482,7 @@ namespace PictureInPicture.ViewModels
       selectedWindow.PictureInPictureEnabled = true;
       if (_selectedWindow != null)
       {
+        selectedWindow.PipSize = _selectedWindow.PipSize;
         selectedWindow.PipPosition = _selectedWindow.PipPosition;
       }
       Messenger.Send(selectedWindow);
