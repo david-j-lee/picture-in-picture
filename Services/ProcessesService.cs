@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Interop;
+using Microsoft.Extensions.Logging;
 using PictureInPicture.DataModel;
 using PictureInPicture.Native;
 using PictureInPicture.Shared;
@@ -15,7 +16,42 @@ namespace PictureInPicture.Services
 {
   public class ProcessesService : IDisposable
   {
+    private readonly ILogger<ProcessesService> _logger;
+
     #region public
+
+    public ProcessesService(ILogger<ProcessesService> logger)
+    {
+      _logger = logger;
+      _logger?.LogInformation("Init processes service");
+
+      _excludedWindows = new List<IntPtr>();
+      GetProcesses();
+
+      _createDestroyEventProc = CreateDestroyEventProc;
+      _createDestroyEventhook = NativeMethods.SetWinEventHook(
+          (uint)EventConstants.EVENT_OBJECT_CREATE,
+          (uint)EventConstants.EVENT_OBJECT_DESTROY,
+          IntPtr.Zero,
+          _createDestroyEventProc,
+          0,
+          0,
+          (uint)EventConstants.WINEVENT_OUTOFCONTEXT
+              | (uint)EventConstants.WINEVENT_SKIPOWNPROCESS
+      );
+
+      _foregroundEventProc = ForegroundEventProc;
+      _foregroundEventhook = NativeMethods.SetWinEventHook(
+          (uint)EventConstants.EVENT_SYSTEM_FOREGROUND,
+          (uint)EventConstants.EVENT_SYSTEM_FOREGROUND,
+          IntPtr.Zero,
+          _foregroundEventProc,
+          0,
+          0,
+          (uint)EventConstants.WINEVENT_OUTOFCONTEXT
+              | (uint)EventConstants.WINEVENT_SKIPOWNPROCESS
+      );
+    }
 
     /// <summary>
     /// Gets all open windows exepted <see cref="_excludedWindows"/> 
@@ -90,17 +126,10 @@ namespace PictureInPicture.Services
     public event EventHandler OpenWindowsChanged;
     public event EventHandler ForegroundWindowChanged;
 
-    /// <summary>
-    /// Gets the instance of the singleton
-    /// </summary>
-    public static ProcessesService Instance =>
-        _instance ?? (_instance = new ProcessesService());
-
     #endregion
 
     #region private
 
-    private static ProcessesService _instance;
     private List<IntPtr> _excludedWindows;
     private Hashtable _processes;
     private readonly IntPtr _createDestroyEventhook;
@@ -109,41 +138,6 @@ namespace PictureInPicture.Services
     private readonly NativeMethods.WinEventDelegate _foregroundEventProc;
 
     #endregion
-
-    /// <summary>
-    /// Constructor (Singleton so private)
-    /// </summary>
-    private ProcessesService()
-    {
-      Logger.Instance.Info("Init processes service");
-
-      _excludedWindows = new List<IntPtr>();
-      GetProcesses();
-
-      _createDestroyEventProc = CreateDestroyEventProc;
-      _createDestroyEventhook = NativeMethods.SetWinEventHook(
-          (uint)EventConstants.EVENT_OBJECT_CREATE,
-          (uint)EventConstants.EVENT_OBJECT_DESTROY,
-          IntPtr.Zero,
-          _createDestroyEventProc,
-          0,
-          0,
-          (uint)EventConstants.WINEVENT_OUTOFCONTEXT
-              | (uint)EventConstants.WINEVENT_SKIPOWNPROCESS
-      );
-
-      _foregroundEventProc = ForegroundEventProc;
-      _foregroundEventhook = NativeMethods.SetWinEventHook(
-          (uint)EventConstants.EVENT_SYSTEM_FOREGROUND,
-          (uint)EventConstants.EVENT_SYSTEM_FOREGROUND,
-          IntPtr.Zero,
-          _foregroundEventProc,
-          0,
-          0,
-          (uint)EventConstants.WINEVENT_OUTOFCONTEXT
-              | (uint)EventConstants.WINEVENT_SKIPOWNPROCESS
-      );
-    }
 
     /// <summary>
     /// Destructor
@@ -158,7 +152,6 @@ namespace PictureInPicture.Services
     {
       NativeMethods.UnhookWinEvent(_createDestroyEventhook);
       NativeMethods.UnhookWinEvent(_foregroundEventhook);
-      _instance = null;
     }
 
     /// <summary>

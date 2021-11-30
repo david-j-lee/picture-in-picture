@@ -1,9 +1,11 @@
-﻿using PictureInPicture.Interfaces;
+﻿using Microsoft.Extensions.DependencyInjection;
+using PictureInPicture.Interfaces;
+using PictureInPicture.ViewModels;
 
 namespace PictureInPicture.Views
 {
   /// <summary>
-  /// Logique d'interaction pour CropperWindow.xaml
+  /// View class for CropperWindow.xaml
   /// </summary>
   public partial class CropperWindow
   {
@@ -13,6 +15,7 @@ namespace PictureInPicture.Views
     public CropperWindow()
     {
       InitializeComponent();
+      DataContext = App.Current.Services.GetService<CropperViewModel>();
 
       Loaded += (s, e) =>
       {

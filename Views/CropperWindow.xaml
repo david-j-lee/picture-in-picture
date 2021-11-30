@@ -5,7 +5,6 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:fa5="http://schemas.fontawesome.com/icons/"
   xmlns:system="clr-namespace:System;assembly=mscorlib"
-  xmlns:viewModels="clr-namespace:PictureInPicture.ViewModels"
   xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
   mc:Ignorable="d"
   Icon="..\Assets\icon.ico"
@@ -17,10 +16,6 @@
   Width="{Binding WindowWidth, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
   Height="{Binding WindowHeight, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
   Title="{Binding Title, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
-
-  <Window.DataContext>
-    <viewModels:CropperViewModel/>
-  </Window.DataContext>
 
   <behaviors:Interaction.Triggers>
     <behaviors:EventTrigger EventName="Closing">

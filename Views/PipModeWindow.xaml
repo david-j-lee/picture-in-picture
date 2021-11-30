@@ -5,7 +5,6 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:fa5="http://schemas.fontawesome.com/icons/"
-  xmlns:viewModels="clr-namespace:PictureInPicture.ViewModels"
   xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
   mc:Ignorable="d"
   Icon="..\Assets\icon.ico"
@@ -24,14 +23,7 @@
   Topmost="True"
   WindowStartupLocation="Manual">
 
-  <Window.DataContext>
-    <viewModels:PipModeViewModel />
-  </Window.DataContext>
-
   <behaviors:Interaction.Triggers>
-    <behaviors:EventTrigger EventName="Loaded">
-      <behaviors:InvokeCommandAction Command="{Binding LoadedCommand}" />
-    </behaviors:EventTrigger>
     <behaviors:EventTrigger EventName="MouseEnter">
       <behaviors:InvokeCommandAction Command="{Binding MouseEnterCommand}"
         PassEventArgsToCommand="True" />

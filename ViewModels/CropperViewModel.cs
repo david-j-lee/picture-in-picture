@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using Microsoft.Extensions.Logging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
@@ -16,6 +17,8 @@ namespace PictureInPicture.ViewModels
 {
   public class CropperViewModel : ObservableRecipient, ICloseable
   {
+    private readonly ILogger<CropperViewModel> _logger;
+
     #region public
 
     public event EventHandler<EventArgs> RequestClose;
@@ -276,9 +279,10 @@ namespace PictureInPicture.ViewModels
     /// <summary>
     /// Constructor
     /// </summary>
-    public CropperViewModel()
+    public CropperViewModel(ILogger<CropperViewModel> logger)
     {
-      Logger.Instance.Info("   ====== CropperWindow ======   ");
+      _logger = logger;
+      _logger?.LogInformation("   ====== CropperWindow ======   ");
 
       ClosingCommand = new RelayCommand(ClosingCommandExecute);
       CloseCommand = new RelayCommand(CloseCommandExecute);
@@ -301,13 +305,13 @@ namespace PictureInPicture.ViewModels
       _windowInfo = windowInfo;
       if (windowInfo == null)
       {
-        Logger.Instance.Error("Can't Init cropper");
+        _logger?.LogError("Can't Init cropper");
         ClosingCommandExecute();
         RequestClose?.Invoke(this, EventArgs.Empty);
         return;
       }
 
-      Logger.Instance.Info("Init cropper : " + _windowInfo.Title);
+      _logger?.LogInformation("Init cropper : " + _windowInfo.Title);
 
       Title = _windowInfo.Title + " - Cropper - PictureInPicture";
 
@@ -460,7 +464,7 @@ namespace PictureInPicture.ViewModels
     /// </summary>
     private void ClosingCommandExecute()
     {
-      Logger.Instance.Info("   |||||| Close CropperWindow ||||||   ");
+      _logger?.LogInformation("   |||||| Close CropperWindow ||||||   ");
       Messenger.Unregister<WindowInfo>(this);
       Messenger.Unregister<Action<NativeStructs.Rect>>(this);
     }

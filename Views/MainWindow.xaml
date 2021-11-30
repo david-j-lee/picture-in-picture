@@ -5,7 +5,6 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
   xmlns:fa5="http://schemas.fontawesome.com/icons/"
-  xmlns:viewModels="clr-namespace:PictureInPicture.ViewModels"
   mc:Ignorable="d"
   Icon="..\Assets\icon.ico"
   BorderThickness="0"
@@ -14,10 +13,6 @@
   MinHeight="200"
   MinWidth="550"
   Title="Picture in Picture">
-
-  <Window.DataContext>
-    <viewModels:MainViewModel />
-  </Window.DataContext>
 
   <Window.Resources>
     <ResourceDictionary>
@@ -149,12 +144,12 @@
 
     <Grid Grid.Row="1"
       Background="{StaticResource BackgroundSecondary}">
-      <TextBlock HorizontalAlignment="Center"
+      <TextBlock Text="{Binding InfoText}"
+        TextWrapping="Wrap"
+        HorizontalAlignment="Center"
         VerticalAlignment="Center"
         Foreground="White"
-        FontSize="16"
-        Text="{Binding InfoText}">
-      </TextBlock>
+        FontSize="16"/>
     </Grid>
 
   </Grid>

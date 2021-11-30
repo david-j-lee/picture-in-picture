@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.Extensions.Logging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
@@ -11,13 +12,15 @@ using PictureInPicture.DataModel;
 using PictureInPicture.Interfaces;
 using PictureInPicture.Native;
 using PictureInPicture.Services;
-using PictureInPicture.Shared;
 using PictureInPicture.Views;
 
 namespace PictureInPicture.ViewModels
 {
   public class MainViewModel : ObservableRecipient, ICloseable
   {
+    private readonly ILogger<MainViewModel> _logger;
+    private readonly ProcessesService _processesService;
+
     #region public
 
     public event EventHandler<EventArgs> RequestClose;
@@ -145,9 +148,14 @@ namespace PictureInPicture.ViewModels
     /// <summary>
     /// Constructor
     /// </summary>
-    public MainViewModel()
+    public MainViewModel(ILogger<MainViewModel> logger,
+      ProcessesService processesService
+    )
     {
-      Logger.Instance.Info("   ====== MainWindow ======   ");
+      _logger = logger;
+      _processesService = processesService;
+
+      _logger?.LogInformation("   ====== MainWindow ======   ");
 
       TogglePipCommand = new RelayCommand(TogglePipCommandExecute);
       LockPipCommand = new RelayCommand(LockPipCommandExecute);
@@ -162,8 +170,8 @@ namespace PictureInPicture.ViewModels
       Messenger.Register<SelectedWindow>(
         this, (_, m) => HandleSelectedWindowChange(m));
 
-      ProcessesService.Instance.OpenWindowsChanged += OpenWindowsChanged;
-      ProcessesService.Instance.ForegroundWindowChanged +=
+      _processesService.OpenWindowsChanged += OpenWindowsChanged;
+      _processesService.ForegroundWindowChanged +=
           ForegroundWindowChanged;
       UpdateWindowsList();
     }
@@ -173,8 +181,8 @@ namespace PictureInPicture.ViewModels
     /// </summary>
     private void UpdateWindowsList()
     {
-      Logger.Instance.Info("Windows list updated");
-      var openWindows = ProcessesService.Instance.OpenWindows;
+      _logger?.LogInformation("Windows list updated");
+      var openWindows = _processesService.OpenWindows;
 
       var toAdd = openWindows.Where(x => WindowsList.All(y => x != y));
       var toRemove = WindowsList
@@ -235,19 +243,19 @@ namespace PictureInPicture.ViewModels
     private void ForegroundWindowChanged(object sender, EventArgs e)
     {
       UpdateWindowsList();
-      var foregroundWindow = ProcessesService.Instance.ForegroundWindow;
+      var foregroundWindow = _processesService.ForegroundWindow;
       if (foregroundWindow != null)
       {
         if (EnableTargetNextFocusedWindow)
         {
           SelectedWindowInfo = foregroundWindow;
         }
-        Logger.Instance.Info(
+        _logger?.LogInformation(
             "Foreground window updated : " + SelectedWindowInfo?.Title
         );
       }
       else
-        Logger.Instance.Warn(
+        _logger?.LogWarning(
             "Foreground window updated but window is null"
         );
     }
@@ -349,14 +357,13 @@ namespace PictureInPicture.ViewModels
     /// </summary>
     private void ClosingCommandExecute()
     {
-      Logger.Instance.Info("   |||||| Close MainWindow ||||||   ");
+      _logger.LogInformation("   |||||| Close MainWindow ||||||   ");
 
       Messenger.Unregister<PipModeWindow>(this);
       Messenger.Unregister<SelectedWindow>(this);
-      ProcessesService.Instance.OpenWindowsChanged -= OpenWindowsChanged;
-      ProcessesService.Instance.ForegroundWindowChanged -=
-          ForegroundWindowChanged;
-      ProcessesService.Instance.Dispose();
+      _processesService.OpenWindowsChanged -= OpenWindowsChanged;
+      _processesService.ForegroundWindowChanged -= ForegroundWindowChanged;
+      _processesService.Dispose();
 
       CloseAllWindows();
 
