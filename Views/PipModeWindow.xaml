@@ -45,6 +45,7 @@
         VerticalAlignment="Center"
         HorizontalAlignment="Center"
         Height="30"
+        Background="Black"
         Foreground="White">
         <StackPanel Orientation="Horizontal">
           <fa5:SvgAwesome Icon="Solid_Times"
